@@ -57,3 +57,6 @@ Include/
 Lib/
 Scripts/
 
+# PyCharm dirs
+.idea/
+
