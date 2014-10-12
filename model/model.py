@@ -6,32 +6,25 @@ from peewee import *
 db = SqliteDatabase('gustaf.db')
 
 
-class Show(Model):
+class BaseModel(Model):
+    class Meta:
+        database = db
+
+
+class Show(BaseModel):
     name = CharField()
 
-    class Meta:
-        database = db
 
-
-class Season(Model):
+class Season(BaseModel):
     show = ForeignKeyField(Show, related_name='season')
-    number = IntegerField()
-
-    class Meta:
-        database = db
+    number = CharField()
 
 
-class Episode(Model):
+class Episode(BaseModel):
     season = ForeignKeyField(Season, related_name='episode')
-    number = IntegerField()
+    number = CharField()
     path = CharField()
 
-    class Meta:
-        database = db
 
-
-class Source(Model):
+class Source(BaseModel):
     dir = CharField()
-
-    class Meta:
-        database = db

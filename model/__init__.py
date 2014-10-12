@@ -1,3 +1,4 @@
 __author__ = 'roland'
 
-from model import *
+from model.model import *
+from model.modelmanager import ModelManager
