@@ -1,6 +1,7 @@
 __author__ = 'roland'
 
 import os
+import sys
 
 import tornado.ioloop
 import tornado.web
@@ -10,6 +11,8 @@ from model import ModelManager, Show
 
 
 if __name__ == '__main__':
+    sys.path.insert(0, os.path.join(os.path.dirname(__file__)))
+
     ModelManager.init_model()
     ModelManager.update_model()
 

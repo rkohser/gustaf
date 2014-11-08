@@ -4,7 +4,7 @@ import re
 from peewee import DoesNotExist
 
 from model import Show, Season, Episode, db
-from modules import FileFinder
+from core import FileFinder
 
 
 class ModelManager:
