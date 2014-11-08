@@ -4,7 +4,7 @@ import re
 from peewee import DoesNotExist
 
 from model import Show, Season, Episode, db
-from gustaf_core import FileFinder
+from modules import FileFinder
 
 
 class ModelManager:
@@ -58,9 +58,8 @@ class ModelManager:
                 except DoesNotExist:
                     Episode.create(season=season, number=parsed_episode, path=episode['path'])
                     print('Merged "' + show.name + '" season ' + parsed_season + ' episode ' + parsed_episode)
-                else:
-                    print(
-                        '"' + show.name + '" season ' + parsed_season + ' episode ' + parsed_episode + ' already in db')
+                    # else:
+                    #print('"' + show.name + '" season ' + parsed_season + ' episode ' + parsed_episode + ' already in db')
 
     @staticmethod
     def normalize_name(raw_name):

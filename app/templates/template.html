@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+
+{% block shows %}
+{% for item in items %}
+<li><a href="">{{ escape(item) }}</a></li>
+{% end %}
+{% end %}

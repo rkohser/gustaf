@@ -16,7 +16,7 @@ class FileFinder:
     def find(self):
         files = list()
 
-        #all dirs
+        # all dirs
         for _dir in self._dirs:
 
             #all files
