@@ -2,7 +2,7 @@ __author__ = 'roland'
 
 import tornado.websocket
 
-from model import Season, Episode
+from model import Show, Season, Episode
 
 
 class ShowHandler(tornado.websocket.WebSocketHandler):
@@ -14,7 +14,9 @@ class ShowHandler(tornado.websocket.WebSocketHandler):
                     .join(Season)
                     .where(Season.id == season_id))
 
-        self.write_message(self.render_string("episodes.html", episodes=episodes))
+        title = episodes[0].season.show.name.title() + " - Season " + episodes[0].season.number
+
+        self.write_message(self.render_string("episodes.html", episodes=episodes, title=title))
 
     def on_close(self):
         print("WebSocket closed")
