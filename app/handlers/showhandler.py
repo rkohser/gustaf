@@ -2,7 +2,7 @@ __author__ = 'roland'
 
 import tornado.websocket
 
-from model import Show, Season, Episode
+from model import Season, Episode
 
 
 class ShowHandler(tornado.websocket.WebSocketHandler):

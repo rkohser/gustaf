@@ -8,7 +8,7 @@ import re
 
 class FileFinder:
     reobj = re.compile(
-        r'(?P<show_name>.*)\.[sS](?P<season_num>[0-9]+)[eE](?P<episode_num>[0-9]+)(?P<team>.*)\.(?P<extension>mkv|mp4|avi)')
+        r'(?P<show_name>.*)(\.\d{4})?\.[sS](?P<season_num>[0-9]+)[eE](?P<episode_num>[0-9]+)(?P<team>.*)\.(?P<extension>mkv|mp4|avi)')
 
     def __init__(self, dirs_):
         self._dirs = dirs_
