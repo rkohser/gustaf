@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block sidebar %}
+{% if shows %}
+{% for show in shows %}
+<div class="btn-group">
+    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+        {{ escape(show.name.title()) }}
+        <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" role="menu">
+        {% for season in show.seasons %}
+        <li><a href="javascript:gustaf.getEpisodesForSeason({{ season.id }})">Season {{ escape(season.number) }}</a>
+        </li>
+        {% end %}
+    </ul>
+</div>
+{% end %}
+{% else %}
+<div class="btn-group">
+    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+        Show name
+        <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" role="menu">
+        <li><a href="#">Season number</a></li>
+    </ul>
+</div>
+{% end %}
+{% end %}

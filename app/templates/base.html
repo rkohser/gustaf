@@ -40,37 +40,20 @@
 
 <div class="container">
     <div class="row">
-        <!--div class="col-md-2 sidebar">
-            <ul class="nav nav-sidebar">
-                {% block shows %}
-                <li>DEFAULT</li>
-                {% end %}
-            </ul>
-        </div>
-        <div class="col-md-2">
-            <div class="col-md-4 main">
-                <ul>
-                    {% block seasons %}
-                    <li>DEFAULT</li>
-                    {% end %}
-                </ul>
-            </div>
-            <div class="col-md-8">
-                <ul>
-                    {% block episodes %}
-                    <li>DEFAULT</li>
-                    {% end %}
-                </ul>
-            </div>
-        </div-->
-
         <div class="btn-group-vertical col-lg-4 sidebar">
             {% block sidebar %}
+            <div class="btn-group">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                    Show name
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a href="#">Season number</a></li>
+                </ul>
+            </div>
             {% end %}
         </div>
-        <div class="col-lg-4">
-        </div>
-        <div class="col-lg-4">
+        <div id="episodes" class="col-lg-8">
         </div>
     </div>
 </div>
@@ -80,6 +63,7 @@
 <!-- Placed at the end of the document so the pages load faster -->
 <script src="{{ static_url('externals/jquery-2.1.1.min.js') }}"></script>
 <script src="{{ static_url('externals/bootstrap-3.2.0-dist/js/bootstrap.min.js') }}"></script>
+<script src="{{ static_url('js/gustaf.js') }}"></script>
 
 </body>
 </html>

@@ -20,7 +20,7 @@ if __name__ == '__main__':
         def __init__(self):
             handlers = [
                 (r"/", MainHandler),
-                (r"/([0-9]+)", ShowHandler)
+                (r"/websocket", ShowHandler)
             ]
 
             settings = {

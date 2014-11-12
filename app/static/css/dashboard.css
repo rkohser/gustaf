@@ -30,11 +30,11 @@ body {
  */
 
 /* Hide for mobile, show later */
-.sidebar {
+.sidebar1 {
   display: none;
 }
 @media (min-width: 768px) {
-  .sidebar {
+  .sidebar1 {
     position: fixed;
     top: 51px;
     bottom: 0;
