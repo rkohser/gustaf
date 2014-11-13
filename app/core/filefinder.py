@@ -19,13 +19,16 @@ class FileFinder:
         # all dirs
         for _dir in self._dirs:
 
-            #all files
-            for file in os.listdir(_dir):
-                m = self.reobj.match(file)
-                if m:
-                    file_dict = m.groupdict()
-                    file_dict['path'] = file
-                    files.append(file_dict)
+            # all files
+            try:
+                for file in os.listdir(_dir):
+                    m = self.reobj.match(file)
+                    if m:
+                        file_dict = m.groupdict()
+                        file_dict['path'] = file
+                        files.append(file_dict)
+            except OSError:
+                pass
         return files
 
 
