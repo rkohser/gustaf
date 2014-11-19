@@ -25,7 +25,7 @@ class FileFinder:
                     m = self.reobj.match(file)
                     if m:
                         file_dict = m.groupdict()
-                        file_dict['path'] = file
+                        file_dict['path'] = os.path.join(_dir, file)
                         files.append(file_dict)
             except OSError:
                 pass

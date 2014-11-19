@@ -7,7 +7,7 @@ import tornado.ioloop
 import tornado.web
 import tornado.template
 from model import ModelManager
-from handlers import MainHandler, ShowHandler
+from handlers import MainHandler, ShowHandler, PlayHandler
 
 
 if __name__ == '__main__':
@@ -20,7 +20,8 @@ if __name__ == '__main__':
         def __init__(self):
             handlers = [
                 (r"/", MainHandler),
-                (r"/websocket", ShowHandler)
+                (r"/show", ShowHandler),
+                (r"/play", PlayHandler)
             ]
 
             settings = {

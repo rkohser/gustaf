@@ -7,7 +7,7 @@ from model import Season, Episode
 
 class ShowHandler(tornado.websocket.WebSocketHandler):
     def open(self):
-        print("WebSocket opened")
+        print("Show webSocket opened")
 
     def on_message(self, season_id):
         episodes = (Episode.select(Season, Episode)
@@ -19,4 +19,4 @@ class ShowHandler(tornado.websocket.WebSocketHandler):
         self.write_message(self.render_string("episodes.html", episodes=episodes, title=title))
 
     def on_close(self):
-        print("WebSocket closed")
+        print("Show webSocket closed")
