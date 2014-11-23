@@ -17,12 +17,12 @@ class Show(BaseModel):
 
 class Season(BaseModel):
     show = ForeignKeyField(Show, related_name='seasons')
-    number = CharField()
+    number = IntegerField()
 
 
 class Episode(BaseModel):
     season = ForeignKeyField(Season, related_name='episodes')
-    number = CharField()
+    number = IntegerField()
     path = CharField()
 
 

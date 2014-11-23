@@ -26,17 +26,21 @@ class ModelManager:
     @staticmethod
     def update_model():
 
-        finder = FileFinder(['E:\JDownloader'])
-        for episode in finder.find():
-            ModelManager.merge_episode(episode)
+        db_ = list()
+        for episode in Episode.select():
+            db_.append(episode.path)
+        finder = FileFinder(['E:\JDownloader'], db_)
+        for episode_info in finder.find():
+            ModelManager.merge_episode(episode_info)
 
     @staticmethod
-    def merge_episode(episode):
+    def merge_episode(episode_info):
 
         # Split the name
-        show_name = ModelManager.normalize_name(episode['show_name'])
-        parsed_season = episode['season_num']
-        parsed_episode = episode['episode_num']
+        path, info = episode_info
+        show_name = info['series']
+        parsed_season = info['season']
+        parsed_episode = info['episodeNumber']
 
         try:
             show = Show.get(Show.name == show_name)
@@ -44,28 +48,19 @@ class ModelManager:
             # Show does not exist yet
             show = Show.create(name=show_name)
             season = Season.create(show=show, number=parsed_season)
-            Episode.create(season=season, number=parsed_episode, path=episode['path'])
+            Episode.create(season=season, number=parsed_episode, path=path)
         else:
             try:
                 season = Season.get(Season.show == show, Season.number == parsed_season)
             except DoesNotExist:
                 # Season did not exist yet
                 season = Season.create(show=show, number=parsed_season)
-                Episode.create(season=season, number=parsed_episode, path=episode['path'])
+                Episode.create(season=season, number=parsed_episode, path=path)
             else:
                 try:
                     episode = Episode.get(Episode.season == season, Episode.number == parsed_episode)
                 except DoesNotExist:
-                    Episode.create(season=season, number=parsed_episode, path=episode['path'])
-                    print('Merged "' + show.name + '" season ' + parsed_season + ' episode ' + parsed_episode)
+                    Episode.create(season=season, number=parsed_episode, path=path)
+                    print('Merged "' + show.name + '" season ' + str(parsed_season) + ' episode ' + str(parsed_episode))
                     # else:
                     #print('"' + show.name + '" season ' + parsed_season + ' episode ' + parsed_episode + ' already in db')
-
-    @staticmethod
-    def normalize_name(raw_name):
-        """
-        Normalizes a show name
-        :param raw_name:
-        :return:
-        """
-        return ' '.join(ModelManager._name_sep.split(raw_name.lower()))

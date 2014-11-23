@@ -1,41 +1,24 @@
 __author__ = 'roland'
 
-import sys
-
 import os
-import re
+import guessit
 
 
 class FileFinder:
-    reobj = re.compile(
-        r'(?P<show_name>.*)(\.\d{4})?\.[sS](?P<season_num>[0-9]+)[eE](?P<episode_num>[0-9]+)(?P<team>.*)\.(?P<extension>mkv|mp4|avi)')
-
-    def __init__(self, dirs_):
+    def __init__(self, dirs_, db=tuple()):
         self._dirs = dirs_
+        self.db = db
 
     def find(self):
-        files = list()
+        file_info = list()
 
-        # all dirs
-        for _dir in self._dirs:
-
-            # all files
-            try:
-                for file in os.listdir(_dir):
-                    m = self.reobj.match(file)
-                    if m:
-                        file_dict = m.groupdict()
-                        file_dict['path'] = os.path.join(_dir, file)
-                        files.append(file_dict)
-            except OSError:
-                pass
-        return files
-
-
-if __name__ == '__main__':
-
-    if len(sys.argv) == 2:
-        finder = FileFinder(sys.argv[1:])
-        duc = finder.find()
-        print([x['show'] for x in duc])
+        for dir_ in self._dirs:
+            for root, dummy, files_ in os.walk(dir_):
+                for filename in files_:
+                    path = os.path.join(root, filename)
+                    if path not in self.db:
+                        info = guessit.guess_file_info(path)
+                        if info and info["type"] == "episode":
+                            file_info.append((path, info))
+        return file_info
 

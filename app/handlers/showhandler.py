@@ -14,7 +14,7 @@ class ShowHandler(tornado.websocket.WebSocketHandler):
                     .join(Season)
                     .where(Season.id == season_id))
 
-        title = episodes[0].season.show.name.title() + " - Season " + episodes[0].season.number
+        title = episodes[0].season.show.name.title() + " - Season " + str(episodes[0].season.number)
 
         self.write_message(self.render_string("episodes.html", episodes=episodes, title=title))
 

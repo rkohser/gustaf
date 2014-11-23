@@ -10,7 +10,8 @@
     </button>
     <ul class="dropdown-menu" role="menu">
         {% for season in show.seasons %}
-        <li><a href="javascript:gustaf.getEpisodesForSeason({{ season.id }})">Season {{ escape(season.number) }}</a>
+        <li><a href="javascript:gustaf.getEpisodesForSeason({{ season.id }})">Season {{ escape(str(season.number))
+            }}</a>
         </li>
         {% end %}
     </ul>
