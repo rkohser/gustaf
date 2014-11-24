@@ -29,7 +29,7 @@ class ModelManager:
         db_ = list()
         for episode in Episode.select():
             db_.append(episode.path)
-        finder = FileFinder(['E:\JDownloader'], db_)
+        finder = FileFinder(['E:\JDownloader'], db_, ("mkv", "avi", "mp4"))
         for episode_info in finder.find():
             ModelManager.merge_episode(episode_info)
 
@@ -38,7 +38,7 @@ class ModelManager:
 
         # Split the name
         path, info = episode_info
-        show_name = info['series']
+        show_name = info['series'].lower()
         parsed_season = info['season']
         parsed_episode = info['episodeNumber']
 
