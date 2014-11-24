@@ -11,13 +11,17 @@ class PlayHandler(tornado.websocket.WebSocketHandler):
         self.vlc = VLCProcess()
         self.vlc.register_end_callback(self.on_play_end)
         self.vlc.register_progress_callback(self.on_play_progress)
+        self.episode_id = None
+        self.current = None
+        self.total = None
 
     def open(self):
         print("Play webSocket opened")
 
     def on_message(self, episode_id):
+        self.episode_id = episode_id
         episode = Episode.get(id=episode_id)
-        self.vlc.play(episode.path)
+        self.vlc.play(episode.path, episode.current_time)
 
     def on_close(self):
         print("Play webSocket closed")
@@ -27,9 +31,13 @@ class PlayHandler(tornado.websocket.WebSocketHandler):
         print("VLC Closed")
 
     def on_play_progress(self, times):
-        (current, total) = times
-        self.write_message(str(int(float(current) / float(total) * 100.0)))
-        print("VLC played : " + str(current) + "-" + str(total))
+        (self.current, self.total) = times
+        tornado.ioloop.IOLoop.instance().add_callback(self.do_in_ioloop)
 
-    def write_message(self, msg):
-        tornado.ioloop.IOLoop.instance().add_callback(super().write_message, msg)
+    def do_in_ioloop(self):
+        # update db
+        Episode.update(current_time=float(self.current)).where(Episode.id == self.episode_id).execute()
+        # update progress bar
+        self.write_message(str(int(float(self.current) / float(self.total) * 100.0)))
+        # print to console
+        print("VLC played : " + str(self.current) + "-" + str(self.total))

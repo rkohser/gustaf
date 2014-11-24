@@ -24,6 +24,7 @@ class Episode(BaseModel):
     season = ForeignKeyField(Season, related_name='episodes')
     number = IntegerField()
     path = CharField()
+    current_time = FloatField(default=0.0)
 
 
 class Source(BaseModel):

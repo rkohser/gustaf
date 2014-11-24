@@ -13,7 +13,6 @@ class VLCProcess():
         self.watcher = VLCWatcher()
         self.watching_process = None
 
-        self.episode = None
         self.vlc_path = r"C:\Program Files (x86)\VideoLAN\VLC\vlc.exe"
         self.vlc_options = [
             "--extraintf",
@@ -41,11 +40,12 @@ class VLCProcess():
         """
         self.progress_callback = progress_callback
 
-    def play(self, episode):
-        self.episode = episode
+    def play(self, episode, start_time=0.0):
+
+        self.vlc_options.append("--start-time=" + str(start_time))
 
         # Prepapre player
-        command = [self.vlc_path] + self.vlc_options + [self.episode]
+        command = [self.vlc_path] + self.vlc_options + [episode]
         self.process = threading.Thread(target=self._play, args=(command,)).start()
 
         # Prepare watcher
