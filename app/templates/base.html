@@ -18,8 +18,8 @@
     <link rel="stylesheet" href="{{ static_url('css/dashboard.css') }}">
 
 <body>
-
-<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+<!-- Nav bar -->
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <div class="container-fluid">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
@@ -30,17 +30,15 @@
             </button>
             <a class="navbar-brand">gustaf</a>
         </div>
-        <div class="navbar-collapse collapse">
-            <form class="navbar-form navbar-right">
-                <input type="text" class="form-control" placeholder="Search...">
-            </form>
-        </div>
     </div>
-</div>
+</nav>
 
-<div class="container">
+
+<div class="container-fluid">
     <div class="row">
-        <div class="btn-group-vertical col-lg-4 sidebar">
+
+        <!-- Sidebar -->
+        <aside class="btn-group-vertical col-lg-4 sidebar">
             {% block sidebar %}
             <div class="btn-group">
                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
@@ -52,11 +50,32 @@
                 </ul>
             </div>
             {% end %}
-        </div>
-        <div id="episodes" class="col-lg-8 col-lg-offset-4">
+        </aside>
+
+        <!-- Main section-->
+        <div class="col-lg-8 col-lg-offset-4">
+            <div class="row">
+                <div id="episodes" class="col-lg-12">
+                    <h1>Select a show</h1>
+                </div>
+
+                <div class="footer col-lg-8">
+                    <p>VLC Playing</p>
+
+                    <div class="progress">
+                        <div id="progress" class="progress-bar progress-bar-striped active" role="progressbar"
+                             aria-valuenow="1"
+                             aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                        </div>
+                    </div>
+
+                </div>
+            </div>
         </div>
     </div>
-</div>
+        </div>
+
+</body>
 
 <!-- Bootstrap core JavaScript
 ================================================== -->
@@ -64,6 +83,4 @@
 <script src="{{ static_url('externals/jquery-2.1.1.min.js') }}"></script>
 <script src="{{ static_url('externals/bootstrap-3.2.0-dist/js/bootstrap.min.js') }}"></script>
 <script src="{{ static_url('js/gustaf.js') }}"></script>
-
-</body>
 </html>
