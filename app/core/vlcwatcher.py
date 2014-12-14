@@ -1,5 +1,5 @@
 import telnetlib
-import threading
+import re
 
 
 class WrongPasswordError(Exception):
@@ -15,6 +15,9 @@ class VLCWatcher():
         self.telnet = None
         self.current_time = 0
         self.total_time = 0
+
+        self.status_re = re.compile(r'\( state (?P<state>\w+) \)')
+        self.current_file_re = re.compile(r"\( new input: (?P<file>.+) \)")
 
     def connect(self):
         assert self.telnet is None, "connect() called twice"
@@ -44,7 +47,24 @@ class VLCWatcher():
         return self.telnet.read_until(b">").decode()[1:-3]
 
     def watch(self):
-        return (
-            self.send("get_time"),
-            self.send("get_length"),
-        )
+        # 1. status and current file
+        status = self.parse_status(self.send("status"))
+        # 2. if playing, get time
+        if status["state"] != "stopped":
+            status["get_time"] = int(self.send("get_time"))
+            status["get_length"] = int(self.send("get_length"))
+        return status
+
+    def parse_status(self, status_str):
+        status = dict()
+        try:
+            status["state"] = self.status_re.search(status_str).group("state")
+        except:
+            status["state"] = "Error while querying state"
+        else:
+            if status["state"] == "playing" or status["state"] == "paused":
+                try:
+                    status["file"] = self.current_file_re.search(status_str).group("file")
+                except:
+                    status["file"] = "Error while querying current file"
+        return status

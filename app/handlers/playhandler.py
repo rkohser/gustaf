@@ -1,5 +1,6 @@
 import tornado.websocket
 import tornado.ioloop
+import json
 
 from model import Episode
 from core import VLCProcess
@@ -12,8 +13,6 @@ class PlayHandler(tornado.websocket.WebSocketHandler):
         self.vlc.register_end_callback(self.on_play_end)
         self.vlc.register_progress_callback(self.on_play_progress)
         self.episode_id = None
-        self.current = None
-        self.total = None
 
     def open(self):
         print("Play webSocket opened")
@@ -27,17 +26,19 @@ class PlayHandler(tornado.websocket.WebSocketHandler):
         print("Play webSocket closed")
 
     def on_play_end(self):
-        self.write_message("VLC Closed")
-        print("VLC Closed")
+        self.write_message(json.dumps({'state':'stopped'}))
 
-    def on_play_progress(self, times):
-        (self.current, self.total) = times
-        tornado.ioloop.IOLoop.instance().add_callback(self.do_in_ioloop)
+    def on_play_progress(self, status):
+        tornado.ioloop.IOLoop.instance().add_callback(self.do_in_ioloop, status)
 
-    def do_in_ioloop(self):
-        # update db
-        Episode.update(current_time=float(self.current)).where(Episode.id == self.episode_id).execute()
-        # update progress bar
-        self.write_message(str(int(float(self.current) / float(self.total) * 100.0)))
-        # print to console
-        print("VLC played : " + str(self.current) + "-" + str(self.total))
+    def do_in_ioloop(self, status):
+        # update gustaf status
+        if status['state'] == 'playing':
+            status["progress"] = int(float(status["get_time"]) / float(status["get_length"]) * 100.0)
+            # is it finished ?
+            if (status["get_length"] - status["get_time"]) < 40:
+                Episode.update(current_time=0.0, watched=True).where(Episode.id == self.episode_id).execute()
+            else:
+                Episode.update(current_time=float(status["get_time"])).where(Episode.id == self.episode_id).execute()
+        self.write_message(json.dumps(status))
+

@@ -25,6 +25,7 @@ class Episode(BaseModel):
     number = IntegerField()
     path = CharField()
     current_time = FloatField(default=0.0)
+    watched = BooleanField(default=False)
 
 
 class Source(BaseModel):
