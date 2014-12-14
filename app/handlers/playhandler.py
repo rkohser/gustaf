@@ -36,7 +36,7 @@ class PlayHandler(tornado.websocket.WebSocketHandler):
         if status['state'] == 'playing':
             status["progress"] = int(float(status["get_time"]) / float(status["get_length"]) * 100.0)
             # is it finished ?
-            if (status["get_length"] - status["get_time"]) < 40:
+            if (status["get_length"] - status["get_time"]) < 180:
                 Episode.update(current_time=0.0, watched=True).where(Episode.id == self.episode_id).execute()
             else:
                 Episode.update(current_time=float(status["get_time"])).where(Episode.id == self.episode_id).execute()

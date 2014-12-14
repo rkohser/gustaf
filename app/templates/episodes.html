@@ -1,6 +1,11 @@
 <h1>{{ title }}</h1>
-<ul>
+<table class="table table-hover">
     {% for episode in episodes %}
-    <li><a href="javascript:gustaf.play({{ episode.id }})">{{ episode.path }}</a></li>
+    <tr>
+        <td><a href="javascript:gustaf.play({{ episode.id }})">{{ episode.path }}</a></td>
+        <td>{% if episode.watched %}<span class="label label-success">Watched</span>{% else %}<span
+                class="label label-warning">Not watched</span>{% end %}
+        </td>
+    </tr>
     {% end %}
-</ul>
+</table>
