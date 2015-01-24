@@ -9,8 +9,7 @@
     {% for episode in episodes %}
     <tr>
         <td><a href="javascript:gustaf.play({{ episode.id }})">{{ episode.path }}</a></td>
-        <td>{% if episode.watched %}<span class="label label-success">Watched</span>{% else %}<span
-                class="label label-warning">Not watched</span>{% end %}
+        <td><span class="label {{ episode.state.label }}">{{ episode.state.text }}</span>
         </td>
     </tr>
     {% end %}

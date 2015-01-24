@@ -2,7 +2,7 @@ import tornado.websocket
 import tornado.ioloop
 import json
 
-from model import Episode
+from model import Episode, PlayState
 from core import VLCProcess
 
 
@@ -37,7 +37,7 @@ class PlayHandler(tornado.websocket.WebSocketHandler):
             status["progress"] = int(float(status["get_time"]) / float(status["get_length"]) * 100.0)
             # is it finished ?
             if (status["get_length"] - status["get_time"]) < 180:
-                Episode.update(current_time=0.0, watched=True).where(Episode.id == self.episode_id).execute()
+                Episode.update(current_time=0.0, state=PlayState.WATCHED).where(Episode.id == self.episode_id).execute()
             else:
                 Episode.update(current_time=float(status["get_time"])).where(Episode.id == self.episode_id).execute()
         self.write_message(json.dumps(status))
