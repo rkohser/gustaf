@@ -18,6 +18,11 @@ class PlayHandler(tornado.websocket.WebSocketHandler):
         print("Play webSocket opened")
 
     def on_message(self, episode_id):
+        """
+        Handles message from the websocket
+        :param episode_id:
+        :return:
+        """
         self.episode_id = episode_id
         episode = Episode.get(id=episode_id)
         self.vlc.play(episode.path, episode.current_time)
@@ -26,10 +31,25 @@ class PlayHandler(tornado.websocket.WebSocketHandler):
         print("Play webSocket closed")
 
     def on_play_end(self):
-        self.write_message(json.dumps({'state':'stopped'}))
+        self.write_message(json.dumps({'state': 'stopped'}))
 
     def on_play_progress(self, status):
         tornado.ioloop.IOLoop.instance().add_callback(self.do_in_ioloop, status)
+
+    def write_message(self, message):
+        """
+        Sends a message to the websocket
+        :param message:
+        {
+            "get_time": int seconds,
+            "file": string,
+            "get_length": int seconds,
+            "state": "playing"|"stopped"|"paused",
+            "progress": int percents
+        }
+        :return:
+        """
+        super().write_message(message)
 
     def do_in_ioloop(self, status):
         # update gustaf status
