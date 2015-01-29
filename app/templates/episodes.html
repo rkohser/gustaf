@@ -7,9 +7,10 @@
     </tr>
     </thead>
     {% for episode in episodes %}
-    <tr>
+    <tr id="{{ episode.id }}">
         <td><a href="javascript:gustaf.play({{ episode.id }})">{{ episode.path }}</a></td>
-        <td><a class="label {{ episode.state.label }}" href="#" onclick="gustaf.toggleState($(this));return false;">{{
+        <td><a class="label {{ episode.state.label }}" href="#"
+               onclick="gustaf.toggleState($(this), {{ episode.id }});return false;">{{
             episode.state.text }}</a></td>
     </tr>
     {% end %}

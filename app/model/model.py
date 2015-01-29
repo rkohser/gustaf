@@ -22,6 +22,17 @@ class PlayState(Enum):
         dic = {member.num: member for name, member in cls.__members__.items()}
         return dic[num]
 
+    @classmethod
+    def from_text(cls, text):
+        dic = {member.text: member for name, member in cls.__members__.items()}
+        return dic[text]
+
+    def next(self):
+        if self == PlayState.NOT_WATCHED or self == PlayState.WATCHING:
+            return PlayState.WATCHED
+        elif self == PlayState.WATCHED:
+            return PlayState.NOT_WATCHED
+
 
 class PlayStateField(IntegerField):
     def db_value(self, value):

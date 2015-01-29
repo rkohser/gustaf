@@ -17,6 +17,9 @@ $(document).ready(function(){
                 // Display episode list
                 $('#episodes').html(msg.data);
                 break;
+            case "update_episode_state":
+                setEpisodeState(msg.episode_id, msg.state)
+                break;
         };        
     };
 
@@ -57,6 +60,18 @@ $(document).ready(function(){
 
     // to manage the play state
     gustaf.toggleState = function(object, episode_id) {
-        object
+        var message = {};
+        message.action = "update_episode_state";
+        message.episode_id = episode_id;
+        message.state = object.text();
+        gustaf.show_ws.send(JSON.stringify(message));
+    };
+
+    setEpisodeState = function(episode_id, stateArray) {
+        // select tr with id
+        $("tr#" + episode_id).find(".label")
+            .removeClass()
+            .addClass("label " + stateArray[2])
+            .text(stateArray[1]);
     };
 });

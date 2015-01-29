@@ -1,9 +1,10 @@
 __author__ = 'roland'
 
 import tornado.websocket
+import tornado.ioloop
 import json
 
-from model import Season, Episode
+from model import Season, Episode, PlayState
 
 
 class ShowHandler(tornado.websocket.WebSocketHandler):
@@ -33,6 +34,12 @@ class ShowHandler(tornado.websocket.WebSocketHandler):
             msg['data'] = self.render_string("episodes.html", episodes=episodes, title=title).decode()
             self.write_message(json.dumps(msg))
 
+        elif msg['action'] == 'update_episode_state':
+            new_state = PlayState.from_text(msg['state']).next()
+            msg['state'] = new_state.value
+            self.write_message(json.dumps(msg))
+            tornado.ioloop.IOLoop.instance().add_callback(self.set_episode_state, msg['episode_id'], new_state)
+
     def write_message(self, message):
         """
         Sends a message to the websocket
@@ -50,3 +57,6 @@ class ShowHandler(tornado.websocket.WebSocketHandler):
 
     def on_close(self):
         print("Show webSocket closed")
+
+    def set_episode_state(self, episode_id, state):
+        Episode.update(state=state).where(Episode.id == episode_id).execute()
