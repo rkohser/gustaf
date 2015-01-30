@@ -21,6 +21,9 @@ $(document).ready(function(){
             case "update_episode_state":
                 setEpisodeState(msg.episode_id, msg.state)
                 break;
+            case "update_season_state":
+                setSeasonState(msg.season_id, msg.state)
+                break;
         };        
     };
 
@@ -68,7 +71,7 @@ $(document).ready(function(){
     };
 
     // to manage the play state
-    gustaf.toggleState = function(object, episode_id) {
+    gustaf.toggleEpisodeState = function(object, episode_id) {
         var message = {};
         message.action = "update_episode_state";
         message.episode_id = episode_id;
@@ -76,9 +79,25 @@ $(document).ready(function(){
         gustaf.show_ws.send(JSON.stringify(message));
     };
 
+    gustaf.toggleSeasonState = function(object, season_id) {
+        var message = {};
+        message.action = "update_season_state";
+        message.season_id = season_id;
+        message.state = object.text();
+        gustaf.show_ws.send(JSON.stringify(message));
+    };
+
     setEpisodeState = function(episode_id, stateArray) {
         // select tr with id
-        $("tr#" + episode_id).find(".label")
+        $("#state_episode_" + episode_id)
+            .removeClass()
+            .addClass("label " + stateArray[2])
+            .text(stateArray[1]);
+    };
+
+    setSeasonState = function(season_id, stateArray) {
+        // select tr with id
+        $("#state_season_" + season_id)
             .removeClass()
             .addClass("label " + stateArray[2])
             .text(stateArray[1]);

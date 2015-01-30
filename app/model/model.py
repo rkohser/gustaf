@@ -25,7 +25,7 @@ class PlayState(Enum):
     @classmethod
     def from_text(cls, text):
         dic = {member.text: member for name, member in cls.__members__.items()}
-        return dic[text]
+        return dic[text.strip()]
 
     def next(self):
         if self == PlayState.NOT_WATCHED or self == PlayState.WATCHING:
@@ -50,11 +50,13 @@ class BaseModel(Model):
 
 class Show(BaseModel):
     name = CharField()
+    state = PlayStateField(default=PlayState.NOT_WATCHED)
 
 
 class Season(BaseModel):
     show = ForeignKeyField(Show, related_name='seasons')
     number = IntegerField()
+    state = PlayStateField(default=PlayState.NOT_WATCHED)
 
 
 class Episode(BaseModel):

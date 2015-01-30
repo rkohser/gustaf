@@ -50,6 +50,12 @@ class ShowHandler(tornado.websocket.WebSocketHandler):
             self.write_message(json.dumps(msg))
             tornado.ioloop.IOLoop.instance().add_callback(self.set_episode_state, msg['episode_id'], new_state)
 
+        elif msg['action'] == 'update_season_state':
+            new_state = PlayState.from_text(msg['state']).next()
+            msg['state'] = new_state.value
+            self.write_message(json.dumps(msg))
+            tornado.ioloop.IOLoop.instance().add_callback(self.set_season_state, msg['season_id'], new_state)
+
     def write_message(self, message):
         """
         Sends a message to the websocket
@@ -71,3 +77,6 @@ class ShowHandler(tornado.websocket.WebSocketHandler):
 
     def set_episode_state(self, episode_id, state):
         Episode.update(state=state).where(Episode.id == episode_id).execute()
+
+    def set_season_state(self, season_id, state):
+        Season.update(state=state).where(Season.id == season_id).execute()

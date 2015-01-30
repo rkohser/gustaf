@@ -4,15 +4,21 @@
     <thead>
     <tr>
         <td></td>
-        <td><span class="label label-success">Watched</span></td>
+        <td>
+            <a id="state_season_{{ season.id }}" class="label {{ season.state.label }}" href="#"
+               onclick="gustaf.toggleSeasonState($(this), {{ season.id }});return false;">{{ season.state.text}}</a>
+        </td>
     </tr>
     </thead>
     {% for episode in season.episodes %}
-    <tr id="{{ episode.id }}">
-        <td><a href="javascript:gustaf.play({{ episode.id }})">{{ episode.path }}</a></td>
-        <td><a class="label {{ episode.state.label }}" href="#"
-               onclick="gustaf.toggleState($(this), {{ episode.id }});return false;">{{
-            episode.state.text }}</a></td>
+    <tr>
+        <td>
+            <a href="javascript:gustaf.play({{ episode.id }})">{{ episode.path }}</a>
+        </td>
+        <td>
+            <a id="state_episode_{{ episode.id }}" class="label {{ episode.state.label }}" href="#"
+               onclick="gustaf.toggleEpisodeState($(this), {{ episode.id }});return false;">{{ episode.state.text}}</a>
+        </td>
     </tr>
     {% end %}
 </table>
