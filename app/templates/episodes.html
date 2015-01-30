@@ -1,4 +1,5 @@
-<h1>{{ title }}</h1>
+{% for season in seasons %}
+<h1>Season {{ escape(str(season.number)) }}</h1>
 <table class="table table-hover">
     <thead>
     <tr>
@@ -6,7 +7,7 @@
         <td><span class="label label-success">Watched</span></td>
     </tr>
     </thead>
-    {% for episode in episodes %}
+    {% for episode in season.episodes %}
     <tr id="{{ episode.id }}">
         <td><a href="javascript:gustaf.play({{ episode.id }})">{{ episode.path }}</a></td>
         <td><a class="label {{ episode.state.label }}" href="#"
@@ -15,3 +16,4 @@
     </tr>
     {% end %}
 </table>
+{% end %}

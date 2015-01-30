@@ -4,7 +4,7 @@ import tornado.websocket
 import tornado.ioloop
 import json
 
-from model import Season, Episode, PlayState
+from model import Show, Season, Episode, PlayState
 
 
 class ShowHandler(tornado.websocket.WebSocketHandler):
@@ -16,9 +16,10 @@ class ShowHandler(tornado.websocket.WebSocketHandler):
         Handles message from the websocket
         :param message:
         {
-            "action": "load_season"|"update_episode_state"|"update_season_state"
+            "action": "load_show"|"load_season"|"update_episode_state"|"update_season_state"
             "episode_id": int id
             "season_id": int id
+            "show_id": int id
             "state": json_dump from a model state enum
         }
         :return:
@@ -34,6 +35,15 @@ class ShowHandler(tornado.websocket.WebSocketHandler):
             msg['data'] = self.render_string("episodes.html", episodes=episodes, title=title).decode()
             self.write_message(json.dumps(msg))
 
+        elif msg['action'] == 'load_show':
+            seasons = (Season.select(Episode, Season)
+                       .join(Episode)
+                       .where(Season.show == msg['show_id'])
+                       .order_by(Season.number)
+                       .aggregate_rows())
+            msg['data'] = self.render_string("episodes.html", seasons=seasons).decode()
+            self.write_message(json.dumps(msg))
+
         elif msg['action'] == 'update_episode_state':
             new_state = PlayState.from_text(msg['state']).next()
             msg['state'] = new_state.value
@@ -45,9 +55,10 @@ class ShowHandler(tornado.websocket.WebSocketHandler):
         Sends a message to the websocket
         :param message:
         {
-            "action": "load_season"|"update_episode_state"|"update_season_state"
+            "action": "load_show"|"load_season"|"update_episode_state"|"update_season_state"
             "episode_id": int id
             "season_id": int id
+            "show_id": int id
             "state": json_dump from a model state enum
             "data": ex:html content
         }
