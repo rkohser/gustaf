@@ -5,7 +5,7 @@
     <tr>
         <td></td>
         <td>
-            <a id="state_season_{{ season.id }}" class="label {{ season.state.label }}" href="#"
+            <a id="state_season_{{ season.id }}" class="label label-{{ season.state.label }}" href="#"
                onclick="gustaf.toggleSeasonState($(this), {{ season.id }});return false;">{{ season.state.text}}</a>
         </td>
     </tr>
@@ -16,7 +16,7 @@
             <a href="javascript:gustaf.play({{ episode.id }})">{{ episode.path }}</a>
         </td>
         <td>
-            <a id="state_episode_{{ episode.id }}" class="label {{ episode.state.label }}" href="#"
+            <a id="state_episode_{{ episode.id }}" class="label label-{{ episode.state.label }}" href="#"
                onclick="gustaf.toggleEpisodeState($(this), {{ episode.id }});return false;">{{ episode.state.text}}</a>
         </td>
     </tr>

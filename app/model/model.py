@@ -8,9 +8,9 @@ db = SqliteDatabase('gustaf.db')
 
 @unique
 class PlayState(Enum):
-    NOT_WATCHED = (1, "Not watched", "label-danger")
-    WATCHING = (2, "Watching", "label-waring")
-    WATCHED = (3, "Watched", "label-success")
+    NOT_WATCHED = (1, "Not watched", "danger")
+    WATCHING = (2, "Watching", "warning")
+    WATCHED = (3, "Watched", "success")
 
     def __init__(self, num, text, label):
         self.num = num

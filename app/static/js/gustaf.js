@@ -91,7 +91,7 @@ $(document).ready(function(){
         // select tr with id
         $("#state_episode_" + episode_id)
             .removeClass()
-            .addClass("label " + stateArray[2])
+            .addClass("label label-" + stateArray[2])
             .text(stateArray[1]);
     };
 
@@ -99,7 +99,7 @@ $(document).ready(function(){
         // select tr with id
         $("#state_season_" + season_id)
             .removeClass()
-            .addClass("label " + stateArray[2])
+            .addClass("label label-" + stateArray[2])
             .text(stateArray[1]);
     };
 });
