@@ -47,20 +47,20 @@ class ModelManager:
         except DoesNotExist:
             # Show does not exist yet
             show = Show.create(name=show_name)
-            season = Season.create(show=show, number=parsed_season)
-            Episode.create(season=season, number=parsed_episode, path=path)
+            season = Season.create(show=show, season_number=parsed_season)
+            Episode.create(season=season, episode_number=parsed_episode, path=path)
         else:
             try:
-                season = Season.get(Season.show == show, Season.number == parsed_season)
+                season = Season.get(Season.show == show, Season.season_number == parsed_season)
             except DoesNotExist:
                 # Season did not exist yet
-                season = Season.create(show=show, number=parsed_season)
-                Episode.create(season=season, number=parsed_episode, path=path)
+                season = Season.create(show=show, season_numbernumber=parsed_season)
+                Episode.create(season=season, episode_number=parsed_episode, path=path)
             else:
                 try:
-                    episode = Episode.get(Episode.season == season, Episode.number == parsed_episode)
+                    episode = Episode.get(Episode.season == season, Episode.episode_number == parsed_episode)
                 except DoesNotExist:
-                    Episode.create(season=season, number=parsed_episode, path=path)
+                    Episode.create(season=season, episode_number=parsed_episode, path=path)
                     print('Merged "' + show.name + '" season ' + str(parsed_season) + ' episode ' + str(parsed_episode))
                     # else:
                     #print('"' + show.name + '" season ' + parsed_season + ' episode ' + parsed_episode + ' already in db')

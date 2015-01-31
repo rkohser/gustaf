@@ -5,6 +5,13 @@ from enum import Enum, unique
 
 db = SqliteDatabase('gustaf.db')
 
+# Print all queries to stderr.
+import logging
+
+logger = logging.getLogger('peewee')
+logger.setLevel(logging.DEBUG)
+logger.addHandler(logging.StreamHandler())
+
 
 @unique
 class PlayState(Enum):
@@ -50,21 +57,21 @@ class BaseModel(Model):
 
 class Show(BaseModel):
     name = CharField()
-    state = PlayStateField(default=PlayState.NOT_WATCHED)
+    show_state = PlayStateField(default=PlayState.NOT_WATCHED)
 
 
 class Season(BaseModel):
     show = ForeignKeyField(Show, related_name='seasons')
-    number = IntegerField()
-    state = PlayStateField(default=PlayState.NOT_WATCHED)
+    season_number = IntegerField()
+    season_state = PlayStateField(default=PlayState.NOT_WATCHED)
 
 
 class Episode(BaseModel):
     season = ForeignKeyField(Season, related_name='episodes')
-    number = IntegerField()
+    episode_number = IntegerField()
     path = CharField()
     current_time = FloatField(default=0.0)
-    state = PlayStateField(default=PlayState.NOT_WATCHED)
+    episode_state = PlayStateField(default=PlayState.NOT_WATCHED)
 
 
 class Source(BaseModel):

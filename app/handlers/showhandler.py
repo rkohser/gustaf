@@ -25,22 +25,13 @@ class ShowHandler(tornado.websocket.WebSocketHandler):
         :return:
         """
         msg = json.loads(message)
-        if msg['action'] == 'load_season':
-            episodes = (Episode.select(Season, Episode)
-                        .join(Season)
-                        .where(Season.id == msg['season_id']))
-
-            title = episodes[0].season.show.name.title() + " - Season " + str(episodes[0].season.number)
-
-            msg['data'] = self.render_string("episodes.html", episodes=episodes, title=title).decode()
-            self.write_message(json.dumps(msg))
-
-        elif msg['action'] == 'load_show':
-            seasons = (Season.select(Episode, Season)
+        if msg['action'] == 'load_show':
+            seasons = (Season.select(Season, Episode)
                        .join(Episode)
                        .where(Season.show == msg['show_id'])
-                       .order_by(Season.number)
+                       .order_by(Season.season_number.desc(), Episode.episode_number.desc())
                        .aggregate_rows())
+
             msg['data'] = self.render_string("episodes.html", seasons=seasons).decode()
             self.write_message(json.dumps(msg))
 
@@ -76,7 +67,7 @@ class ShowHandler(tornado.websocket.WebSocketHandler):
         print("Show webSocket closed")
 
     def set_episode_state(self, episode_id, state):
-        Episode.update(state=state).where(Episode.id == episode_id).execute()
+        Episode.update(episode_state=state).where(Episode.id == episode_id).execute()
 
     def set_season_state(self, season_id, state):
-        Season.update(state=state).where(Season.id == season_id).execute()
+        Season.update(season_state=state).where(Season.id == season_id).execute()

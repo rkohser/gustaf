@@ -3,8 +3,8 @@
 {% block sidebar %}
 {% if shows %}
 {% for show in shows %}
-<button type="button" class="btn btn-{{show.state.label}}" onclick="gustaf.getEpisodesForShow({{show.id}})">
-    {{ escape(show.name.title()) }}
+<button type="button" class="btn btn-{{show.show_state.label}}" onclick="gustaf.getEpisodesForShow({{show.id}})">
+{{ escape(show.name.title()) }}
 </button>
 {% end %}
 {% else %}

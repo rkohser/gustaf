@@ -14,7 +14,6 @@ $(document).ready(function(){
         var msg = JSON.parse(evt.data);
         switch (msg.action) {
             case "load_show":
-            case "load_season":
                 // Display episode list
                 $('#episodes').html(msg.data);
                 break;
@@ -47,14 +46,6 @@ $(document).ready(function(){
             $('#progress').hide();
             break;
         };
-    };
-
-    // to request the episode list
-    gustaf.getEpisodesForSeason = function(seasonId) {
-        var message = {};
-        message.action = "load_season";
-        message.season_id = seasonId;
-        gustaf.show_ws.send(JSON.stringify(message));
     };
 
     // to request the episode list
