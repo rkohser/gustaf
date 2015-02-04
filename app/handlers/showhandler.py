@@ -2,9 +2,9 @@ __author__ = 'roland'
 
 import tornado.websocket
 import tornado.ioloop
-import json
 
-from model import Show, Season, Episode, PlayState
+from model import Season, Episode, PlayState
+from core import Message, MessageType, parse_message
 
 
 class ShowHandler(tornado.websocket.WebSocketHandler):
@@ -24,28 +24,26 @@ class ShowHandler(tornado.websocket.WebSocketHandler):
         }
         :return:
         """
-        msg = json.loads(message)
-        if msg['action'] == 'load_show':
+
+        msg = parse_message(message)
+        if msg.message_type == MessageType.LOAD_SHOW:
             seasons = (Season.select(Season, Episode)
                        .join(Episode)
-                       .where(Season.show == msg['show_id'])
-                       .order_by(Season.season_number.desc(), Episode.episode_number.desc())
+                       .where(Season.show == msg.show_id)
+                       .order_by(Season.season_number, Episode.episode_number)
                        .aggregate_rows())
+            msg.data = self.render_string("episodes.html", seasons=seasons).decode()
+            self.write_message(msg.to_json())
 
-            msg['data'] = self.render_string("episodes.html", seasons=seasons).decode()
-            self.write_message(json.dumps(msg))
+        elif msg.message_type == MessageType.UPDATE_SEASON_STATE:
+            msg.state = msg.state.next()
+            self.write_message(msg.to_json())
+            tornado.ioloop.IOLoop.instance().add_callback(self.set_episode_state, msg.episode_id, msg.state)
 
-        elif msg['action'] == 'update_episode_state':
-            new_state = PlayState.from_text(msg['state']).next()
-            msg['state'] = new_state.value
-            self.write_message(json.dumps(msg))
-            tornado.ioloop.IOLoop.instance().add_callback(self.set_episode_state, msg['episode_id'], new_state)
-
-        elif msg['action'] == 'update_season_state':
-            new_state = PlayState.from_text(msg['state']).next()
-            msg['state'] = new_state.value
-            self.write_message(json.dumps(msg))
-            tornado.ioloop.IOLoop.instance().add_callback(self.set_season_state, msg['season_id'], new_state)
+        elif msg.message_type == MessageType.UPDATE_EPISODE_STATE:
+            msg.state = msg.state.next()
+            self.write_message(msg.to_json())
+            tornado.ioloop.IOLoop.instance().add_callback(self.set_season_state, msg.season_id, msg.state)
 
     def write_message(self, message):
         """
