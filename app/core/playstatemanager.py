@@ -15,7 +15,20 @@ class PlayStateManager:
 
         assert isinstance(msg, Message)
         if msg.message_type == MessageType.UPDATE_EPISODE_STATE:
+            # toggle state
             msg.state = msg.state.next()
+            msg.season_id = 32
+
+            # query other episodes states
+            states = (Episode.select(Episode.episode_state)
+                      .where((Episode.season == msg.season_id) & (Episode.id != msg.episode_id))
+                      .group_by(Episode.episode_state))
+
+            states_list = list(states)
+            if len(states_list) == 1 and states_list[0].episode_state == msg.state:
+                print('toggle')
+
+            # commit DB changes
             tornado.ioloop.IOLoop.instance().add_callback(PlayStateManager.set_episode_state, msg.episode_id, msg.state)
             return msg
 
@@ -31,4 +44,3 @@ class PlayStateManager:
     @staticmethod
     def set_season_state(season_id, state):
         Season.update(season_state=state).where(Season.id == season_id).execute()
-
