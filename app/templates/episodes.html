@@ -1,3 +1,4 @@
+{% from model import PlayState %}
 {% for season in seasons %}
 <h1>Season {{ escape(str(season.season_number)) }}</h1>
 <table class="table table-hover">
@@ -5,9 +6,11 @@
     <tr>
         <td></td>
         <td>
-            <a id="state_season_{{ season.id }}" class="label label-{{ season.season_state.label }}" href="#"
-               onclick="gustaf.toggleSeasonState($(this), {{ season.id }});return false;">{{
-                season.season_state.text}}</a>
+            <a id="state_season_{{ season.id }}"
+               class="label label-{% if season.state_count == 1 %}{{PlayState.from_num(season.state).label}}{% else %}warning{% end %}"
+               href="#"
+               onclick="gustaf.toggleSeasonState($(this), {{ season.id }});return false;">{% if season.state_count == 1
+                %}{{PlayState.from_num(season.state).text}}{% else %}{{PlayState.WATCHING.text}}{% end %}</a>
         </td>
     </tr>
     </thead>

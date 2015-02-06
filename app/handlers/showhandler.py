@@ -4,6 +4,7 @@ __author__ = 'roland'
 
 import tornado.websocket
 
+from peewee import fn
 from model import Season, Episode
 from core import MessageType, parse_message
 
@@ -28,11 +29,24 @@ class ShowHandler(tornado.websocket.WebSocketHandler):
 
         msg = parse_message(message)
         if msg.message_type == MessageType.LOAD_SHOW:
-            seasons = (Season.select(Season, Episode)
+
+            subquery = (Episode.select(
+                Episode.season.alias('season_id'),
+                Episode.episode_state.alias('state'),
+                fn.Count(fn.distinct(Episode.episode_state)).alias('state_count'))
+                        .join(Season)
+                        .where(Season.show == msg.show_id)
+                        .group_by(Season.id)).alias('sq')
+
+            seasons = (Season.select(Season, Episode,
+                                     subquery.c.state.alias('state'),
+                                     subquery.c.state_count.alias('state_count'))
                        .join(Episode)
+                       .join(subquery, on=(Season.id == subquery.c.season_id))
                        .where(Season.show == msg.show_id)
-                       .order_by(Season.season_number, Episode.episode_number)
+                       .order_by(Season.season_number.desc(), Episode.episode_number.asc())
                        .aggregate_rows())
+
             msg.data = self.render_string("episodes.html", seasons=seasons).decode()
             self.write_message(msg.to_json())
 

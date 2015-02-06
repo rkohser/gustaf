@@ -3,7 +3,7 @@ babelfish==0.5.3
 certifi==14.05.14
 guessit==0.9.4
 pbr==0.10.0
-peewee==2.4.6
+peewee==2.4.7
 python-dateutil==2.2
 requests==2.4.3
 six==1.8.0
