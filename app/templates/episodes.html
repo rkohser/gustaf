@@ -6,11 +6,15 @@
     <tr>
         <td></td>
         <td>
+            {% if season.state_count == 1 %}
+            {% set season_state = PlayState.from_num( season.state ) %}
+            {% else %}
+            {% set season_state = PlayState.WATCHING %}
+            {% end %}
             <a id="state_season_{{ season.id }}"
-               class="label label-{% if season.state_count == 1 %}{{PlayState.from_num(season.state).label}}{% else %}warning{% end %}"
+               class="label label-{{ season_state.label }}"
                href="#"
-               onclick="gustaf.toggleSeasonState($(this), {{ season.id }});return false;">{% if season.state_count == 1
-                %}{{PlayState.from_num(season.state).text}}{% else %}{{PlayState.WATCHING.text}}{% end %}</a>
+               onclick="gustaf.toggleSeasonState($(this), {{ season.id }});return false;">{{ season_state.text }}</a>
         </td>
     </tr>
     </thead>

@@ -34,7 +34,7 @@ class PlayStateManager:
 
         elif msg.message_type == MessageType.UPDATE_SEASON_STATE:
             msg.state = msg.state.next()
-            tornado.ioloop.IOLoop.instance().add_callback(PlayStateManager.set_season_state, msg.season_id, msg.state)
+            # tornado.ioloop.IOLoop.instance().add_callback(PlayStateManager.set_season_state, msg.season_id, msg.state)
             return msg
 
     @staticmethod
@@ -43,4 +43,5 @@ class PlayStateManager:
 
     @staticmethod
     def set_season_state(season_id, state):
-        Season.update(season_state=state).where(Season.id == season_id).execute()
+        pass
+        # Season.update(season_state=state).where(Season.id == season_id).execute()

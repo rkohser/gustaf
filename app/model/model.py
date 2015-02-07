@@ -57,13 +57,11 @@ class BaseModel(Model):
 
 class Show(BaseModel):
     name = CharField()
-    show_state = PlayStateField(default=PlayState.NOT_WATCHED)
 
 
 class Season(BaseModel):
     show = ForeignKeyField(Show, related_name='seasons')
     season_number = IntegerField()
-    season_state = PlayStateField(default=PlayState.NOT_WATCHED)
 
 
 class Episode(BaseModel):
