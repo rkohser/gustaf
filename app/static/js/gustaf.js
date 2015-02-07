@@ -11,8 +11,11 @@ $(document).ready(function(){
 
     // Show web socket
     gustaf.show_ws.onmessage = function(evt) {
-        var msg = JSON.parse(evt.data);
-        switch (msg.action) {
+        var msgList = JSON.parse(evt.data);
+        var nMsg = msgList.length;
+        for (var i = 0; i < nMsg; i++) {
+            var msg = msgList[i];
+            switch (msg.message_type) {
             case "load_show":
                 // Display episode list
                 $('#episodes').html(msg.data);
@@ -23,7 +26,8 @@ $(document).ready(function(){
             case "update_season_state":
                 setSeasonState(msg.season_id, msg.state)
                 break;
-        };        
+            };
+        };       
     };
 
     // Play web socket

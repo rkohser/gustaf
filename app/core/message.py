@@ -5,6 +5,13 @@ from enum import Enum, unique
 import json
 
 
+class EnumEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, Enum):
+            return obj.value
+        return json.JSONEncoder.default(self, obj)
+
+
 @unique
 class MessageType(Enum):
     LOAD_SHOW = "load_show"
@@ -20,7 +27,7 @@ class MessageType(Enum):
         return dic[text]
 
 
-class Message:
+class Message(object):
     """
     Handles message from the websocket
     message:
@@ -56,6 +63,11 @@ class Message:
             msg['season_id'] = self.season_id
             msg['state'] = self.state.value
         return json.dumps(msg)
+
+    @staticmethod
+    def to_json(msg_list):
+        # transform into dict list
+        return json.dumps([msg.__dict__ for msg in msg_list], cls=EnumEncoder)
 
 
 def parse_message(msg):

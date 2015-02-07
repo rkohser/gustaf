@@ -6,7 +6,7 @@ import tornado.websocket
 
 from peewee import fn
 from model import Season, Episode
-from core import MessageType, parse_message
+from core import Message, MessageType, parse_message
 
 
 class ShowHandler(tornado.websocket.WebSocketHandler):
@@ -48,10 +48,12 @@ class ShowHandler(tornado.websocket.WebSocketHandler):
                        .aggregate_rows())
 
             msg.data = self.render_string("episodes.html", seasons=seasons).decode()
-            self.write_message(msg.to_json())
+            self.write_message(Message.to_json((msg,)))
 
         elif msg.message_type == MessageType.UPDATE_SEASON_STATE or msg.message_type == MessageType.UPDATE_EPISODE_STATE:
-            self.write_message(PlayStateManager.handle_message(msg).to_json())
+
+            message_list = PlayStateManager.handle_message(msg)
+            self.write_message(Message.to_json(message_list))
 
     def write_message(self, message):
         """
