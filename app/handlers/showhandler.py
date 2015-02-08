@@ -7,9 +7,13 @@ import tornado.websocket
 from peewee import fn
 from model import Season, Episode
 from core import Message, MessageType, parse_message
+from core import register_handler
 
 
 class ShowHandler(tornado.websocket.WebSocketHandler):
+    def initialize(self, name):
+        register_handler(name, self)
+
     def open(self):
         print("Show webSocket opened")
 

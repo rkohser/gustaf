@@ -1,9 +1,69 @@
 import telnetlib
 import re
+import json
+
+from enum import Enum, unique
 
 
 class WrongPasswordError(Exception):
     pass
+
+
+class EnumEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, Enum):
+            return obj.value
+        return json.JSONEncoder.default(self, obj)
+
+
+@unique
+class VLCState(Enum):
+    STOPPED = "stopped"
+    PLAYING = "playing"
+    PAUSED = "paused"
+
+    def __init__(self, text):
+        self.text = text
+
+    @classmethod
+    def from_text(cls, text):
+        dic = {member.text: member for name, member in cls.__members__.items()}
+        return dic[text]
+
+
+class VLCStatus:
+    def __init__(self, state):
+        self.state = VLCState.from_text(state)
+        self.file = None
+        self._current_time = None
+        self._total_time = None
+        self.progress = None
+
+    @property
+    def current_time(self):
+        return self._current_time
+
+    @current_time.setter
+    def current_time(self, value):
+        self._current_time = float(value)
+
+    @property
+    def total_time(self):
+        return self._total_time
+
+    @total_time.setter
+    def total_time(self, value):
+        self._total_time = float(value)
+
+    def update_progress(self):
+        self.progress = int(self._current_time / self._total_time * 100.0)
+
+    def is_finished(self):
+        return (self.total_time - self.current_time) < 180
+
+    def to_json(self):
+        # transform into dict list
+        return json.dumps(self.__dict__, cls=EnumEncoder)
 
 
 class VLCWatcher():
@@ -13,8 +73,6 @@ class VLCWatcher():
         self.password = password
         self.timeout = timeout
         self.telnet = None
-        self.current_time = 0
-        self.total_time = 0
 
         self.status_re = re.compile(r'\( state (?P<state>\w+) \)')
         self.current_file_re = re.compile(r"\( new input: (?P<file>.+) \)")
@@ -50,21 +108,22 @@ class VLCWatcher():
         # 1. status and current file
         status = self.parse_status(self.send("status"))
         # 2. if playing, get time
-        if status["state"] != "stopped":
-            status["get_time"] = int(self.send("get_time"))
-            status["get_length"] = int(self.send("get_length"))
+        if status.state != VLCState.STOPPED:
+            status.current_time = self.send("get_time")
+            status.total_time = self.send("get_length")
+            status.update_progress()
         return status
 
     def parse_status(self, status_str):
-        status = dict()
+
         try:
-            status["state"] = self.status_re.search(status_str).group("state")
-        except:
-            status["state"] = "Error while querying state"
+            status = VLCStatus(self.status_re.search(status_str).group("state"))
+        except Exception as e:
+            pass
         else:
-            if status["state"] == "playing" or status["state"] == "paused":
+            if status.state == VLCState.PLAYING or status.state == VLCState.PAUSED:
                 try:
-                    status["file"] = self.current_file_re.search(status_str).group("file")
-                except:
-                    status["file"] = "Error while querying current file"
+                    status.file = self.current_file_re.search(status_str).group("file")
+                except Exception as e:
+                    pass
         return status

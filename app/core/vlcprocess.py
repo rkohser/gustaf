@@ -67,5 +67,5 @@ class VLCProcess():
             time.sleep(5)
             try:
                 self.progress_callback(self.watcher.watch())
-            except:
+            except Exception as e:
                 pass

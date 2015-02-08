@@ -20,8 +20,8 @@ if __name__ == '__main__':
         def __init__(self):
             handlers = [
                 (r"/", MainHandler),
-                (r"/show", ShowHandler),
-                (r"/play", PlayHandler)
+                (r"/show", ShowHandler, {'name': 'show'}),
+                (r"/play", PlayHandler, {'name': 'play'})
             ]
 
             settings = {

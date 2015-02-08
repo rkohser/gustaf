@@ -8,8 +8,16 @@ from model import Season, Episode, PlayState
 
 
 class PlayStateManager:
-    def __init__(self):
-        pass
+    @staticmethod
+    def set_episode_state(episode_id, state, current_time=0.0):
+
+        msg_list = list()
+
+        tornado.ioloop.IOLoop.instance().add_callback(
+            PlayStateManager.set_episode_state(episode_id, state, current_time))
+        msg_list.append(Message(MessageType.UPDATE_EPISODE_STATE, episode_id=episode_id, state=state))
+
+        return msg_list
 
     @staticmethod
     def handle_message(msg):
@@ -47,8 +55,8 @@ class PlayStateManager:
         return msg_list
 
     @staticmethod
-    def set_episode_state(episode_id, state):
-        Episode.update(episode_state=state).where(Episode.id == episode_id).execute()
+    def set_episode_state(episode_id, state, current_time=0.0):
+        Episode.update(episode_state=state, current_time=current_time).where(Episode.id == episode_id).execute()
 
     @staticmethod
     def set_season_state(season_id, state):
