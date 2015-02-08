@@ -3,7 +3,7 @@ import tornado.ioloop
 import json
 
 from model import Episode
-from core import VLCProcess, VLCStatus
+from core import VLCProcess, VLCState
 from core import register_handler, get_handler
 from core import PlayStateManager
 from core import Message
@@ -19,7 +19,8 @@ class PlayHandler(tornado.websocket.WebSocketHandler):
         self.episode_state = None
         self.last_current_time = None
         self.last_total_time = None
-        self.last_status = VLCStatus("stopped")
+        self.last_status = None
+        self.last_play_state = None
 
     def initialize(self, name):
         register_handler(name, self)
@@ -36,28 +37,38 @@ class PlayHandler(tornado.websocket.WebSocketHandler):
         if not self.episode_id:
             self.episode_id = episode_id
             episode = Episode.get(id=episode_id)
+            self.last_play_state = episode.episode_state
             self.vlc.play(episode.path, episode.current_time)
 
         else:
-            print("Alreqdy playing, close first instance and retry")
+            print("Already playing, close first instance and retry")
 
     def on_close(self):
         print("Play webSocket closed")
 
     def on_play_end(self):
-        state = self.last_status.deduce_episode_state()
-        PlayStateManager.update_episode(self.episode_id, state, state, self.last_status.current_time)
+        if self.last_status:
+            PlayStateManager.update_episode(self.episode_id, self.last_play_state, self.last_play_state,
+                                            self.last_status.current_time)
         self.write_message(json.dumps({'state': 'stopped'}))
         self.episode_id = None
+        self.episode_state = None
+        self.last_current_time = None
+        self.last_total_time = None
+        self.last_status = None
+        self.last_play_state = None
 
     def on_play_progress(self, status):
-        state = status.deduce_episode_state()
-        old_state = self.last_status.deduce_episode_state()
-        if old_state != state:
-            msg_list = PlayStateManager.update_episode(self.episode_id, old_state, state, status.current_time)
-            get_handler('show').write_message(Message.to_json(msg_list))
 
-        self.last_status = status
+        if status.state == VLCState.PLAYING:
+            state = status.deduce_episode_state()
+            old_state = self.last_play_state
+            if old_state != state:
+                msg_list = PlayStateManager.update_episode(self.episode_id, old_state, state, status.current_time)
+                get_handler('show').write_message(Message.to_json(msg_list))
+
+            self.last_status = status
+            self.last_play_state = state
         self.write_message(status.to_json())
 
     def write_message(self, message):

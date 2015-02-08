@@ -21,8 +21,6 @@ class PlayStateManager:
             msg_list.extend(PlayStateManager.cascade_season_state(episode_id, old_episode_state, new_state))
 
         # commit db changes
-        if new_state == PlayState.WATCHED:
-            current_time = 0.0
         tornado.ioloop.IOLoop.instance().add_callback(
             PlayStateManager.set_episode_state, episode_id, new_state, current_time)
 
@@ -65,6 +63,8 @@ class PlayStateManager:
 
     @staticmethod
     def set_episode_state(episode_id, state, current_time=0.0):
+        if state == PlayState.WATCHED:
+            current_time = 0.0
         Episode.update(episode_state=state, current_time=current_time).where(Episode.id == episode_id).execute()
 
     @staticmethod
