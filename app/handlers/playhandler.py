@@ -2,8 +2,8 @@ import tornado.websocket
 import tornado.ioloop
 import json
 
-from model import Episode, PlayState
-from core import VLCProcess, VLCState, VLCStatus
+from model import Episode
+from core import VLCProcess, VLCStatus
 from core import register_handler, get_handler
 from core import PlayStateManager
 from core import Message
@@ -70,4 +70,3 @@ class PlayHandler(tornado.websocket.WebSocketHandler):
         :return:
         """
         super().write_message(message)
-

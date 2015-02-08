@@ -82,4 +82,3 @@ def parse_message(msg):
         return Message(mt, season_id=d['season_id'], state=PlayState.from_text(d['state']))
     elif mt == MessageType.UPDATE_SHOW_STATE:
         return Message(mt, show_id=d['show_id'], state=PlayState.from_text(d['state']))
-

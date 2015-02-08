@@ -68,8 +68,6 @@ class VLCStatus:
             else:
                 return PlayState.WATCHING
         except:
-            pass
-        else:
             return PlayState.NOT_WATCHED
 
     def to_json(self):
@@ -127,6 +125,7 @@ class VLCWatcher():
 
     def parse_status(self, status_str):
 
+        status = None
         try:
             status = VLCStatus(self.status_re.search(status_str).group("state"))
         except Exception as e:
