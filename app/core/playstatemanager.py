@@ -32,9 +32,6 @@ class PlayStateManager:
             old_season_state = msg.state
             msg.state = old_season_state.next()
 
-            # toggle episodes states in db
-            Episode.update(episode_state=msg.state).where(Episode.season == msg.season_id).execute()
-
             # toggle episodes states in browser
             episode_ids = Episode.select(Episode.id).where(Episode.season == msg.season_id).tuples()
             for episode_id, in episode_ids:
@@ -43,6 +40,8 @@ class PlayStateManager:
             # cascade to show state
             msg_list.extend(PlayStateManager.cascade_show_state(msg.season_id, old_season_state, msg.state))
 
+            # commit DB changes
+            tornado.ioloop.IOLoop.instance().add_callback(PlayStateManager.set_season_state, msg.season_id, msg.state)
             msg_list.append(msg)
 
         return msg_list
@@ -50,6 +49,10 @@ class PlayStateManager:
     @staticmethod
     def set_episode_state(episode_id, state):
         Episode.update(episode_state=state).where(Episode.id == episode_id).execute()
+
+    @staticmethod
+    def set_season_state(season_id, state):
+        Episode.update(episode_state=state).where(Episode.season == season_id).execute()
 
     @staticmethod
     def process_parent_state(old_child_state, new_child_state, other_children_state, other_children_state_count):
