@@ -33,9 +33,13 @@ class PlayHandler(tornado.websocket.WebSocketHandler):
         :param episode_id:
         :return:
         """
-        self.episode_id = episode_id
-        episode = Episode.get(id=episode_id)
-        self.vlc.play(episode.path, episode.current_time)
+        if not self.episode_id:
+            self.episode_id = episode_id
+            episode = Episode.get(id=episode_id)
+            self.vlc.play(episode.path, episode.current_time)
+
+        else:
+            print("Alreqdy playing, close first instance and retry")
 
     def on_close(self):
         print("Play webSocket closed")
@@ -43,8 +47,8 @@ class PlayHandler(tornado.websocket.WebSocketHandler):
     def on_play_end(self):
         state = self.last_status.deduce_episode_state()
         PlayStateManager.update_episode(self.episode_id, state, state, self.last_status.current_time)
-
         self.write_message(json.dumps({'state': 'stopped'}))
+        self.episode_id = None
 
     def on_play_progress(self, status):
         state = status.deduce_episode_state()

@@ -15,6 +15,7 @@ class VLCProcess():
 
         self.vlc_path = r"C:\Program Files (x86)\VideoLAN\VLC\vlc.exe"
         self.vlc_options = [
+            "--one-instance",
             "--extraintf",
             "telnet",
             "--telnet-password",
