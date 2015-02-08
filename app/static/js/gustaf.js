@@ -21,10 +21,13 @@ $(document).ready(function(){
                 $('#episodes').html(msg.data);
                 break;
             case "update_episode_state":
-                setEpisodeState(msg.episode_id, msg.state)
+                setEpisodeState(msg.episode_id, msg.state);
                 break;
             case "update_season_state":
-                setSeasonState(msg.season_id, msg.state)
+                setSeasonState(msg.season_id, msg.state);
+                break;
+            case "update_show_state":
+                setShowState(msg.show_id, msg.state);
                 break;
             };
         };       
@@ -83,7 +86,7 @@ $(document).ready(function(){
     };
 
     setEpisodeState = function(episode_id, stateArray) {
-        // select tr with id
+        // select element with id
         $("#state_episode_" + episode_id)
             .removeClass()
             .addClass("label label-" + stateArray[2])
@@ -91,10 +94,17 @@ $(document).ready(function(){
     };
 
     setSeasonState = function(season_id, stateArray) {
-        // select tr with id
+        // select element with id
         $("#state_season_" + season_id)
             .removeClass()
             .addClass("label label-" + stateArray[2])
             .text(stateArray[1]);
+    };
+
+    setShowState = function(show_id, stateArray) {
+        // select element with id
+        $("#state_show_" + show_id)
+            .removeClass()
+            .addClass("btn btn-" + stateArray[2]);
     };
 });

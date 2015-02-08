@@ -17,6 +17,7 @@ class MessageType(Enum):
     LOAD_SHOW = "load_show"
     UPDATE_EPISODE_STATE = "update_episode_state"
     UPDATE_SEASON_STATE = "update_season_state"
+    UPDATE_SHOW_STATE = "update_show_state"
 
     def __init__(self, text):
         self.text = text
@@ -32,7 +33,7 @@ class Message(object):
     Handles message from the websocket
     message:
     {
-        "type": "load_show"|"update_episode_state"|"update_season_state"
+        "type": "load_show"|"update_episode_state"|"update_season_state"|"update_show_state"
         "episode_id": int id
         "season_id": int id
         "show_id": int id
@@ -79,4 +80,6 @@ def parse_message(msg):
         return Message(mt, episode_id=d['episode_id'], state=PlayState.from_text(d['state']))
     elif mt == MessageType.UPDATE_SEASON_STATE:
         return Message(mt, season_id=d['season_id'], state=PlayState.from_text(d['state']))
+    elif mt == MessageType.UPDATE_SHOW_STATE:
+        return Message(mt, show_id=d['show_id'], state=PlayState.from_text(d['state']))
 
