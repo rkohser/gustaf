@@ -1,4 +1,5 @@
 import telnetlib
+from model import PlayState
 import re
 import json
 
@@ -58,8 +59,13 @@ class VLCStatus:
     def update_progress(self):
         self.progress = int(self._current_time / self._total_time * 100.0)
 
-    def is_finished(self):
-        return (self.total_time - self.current_time) < 180
+    def deduce_episode_state(self):
+        if self.current_time < 180:
+            return PlayState.NOT_WATCHED
+        elif (self.total_time - self.current_time) < 180:
+            return PlayState.WATCHED
+        else:
+            return PlayState.WATCHING
 
     def to_json(self):
         # transform into dict list

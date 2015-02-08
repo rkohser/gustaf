@@ -9,13 +9,21 @@ from model import Season, Episode, PlayState
 
 class PlayStateManager:
     @staticmethod
-    def set_episode_state(episode_id, state, current_time=0.0):
+    def update_episode(episode_id, old_episode_state, new_state, current_time=0.0):
 
         msg_list = list()
 
+        # update episode state label
+        msg_list.append(Message(MessageType.UPDATE_EPISODE_STATE, episode_id=episode_id, state=new_state))
+
+        # cascade season state
+        msg_list.extend(PlayStateManager.cascade_season_state(episode_id, old_episode_state, new_state))
+
+        # commit db changes
+        if new_state == PlayState.WATCHED:
+            current_time = 0.0
         tornado.ioloop.IOLoop.instance().add_callback(
-            PlayStateManager.set_episode_state(episode_id, state, current_time))
-        msg_list.append(Message(MessageType.UPDATE_EPISODE_STATE, episode_id=episode_id, state=state))
+            PlayStateManager.set_episode_state, episode_id, new_state, current_time)
 
         return msg_list
 
