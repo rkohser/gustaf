@@ -60,12 +60,17 @@ class VLCStatus:
         self.progress = int(self._current_time / self._total_time * 100.0)
 
     def deduce_episode_state(self):
-        if self.current_time < 180:
-            return PlayState.NOT_WATCHED
-        elif (self.total_time - self.current_time) < 180:
-            return PlayState.WATCHED
+        try:
+            if self.current_time < 180:
+                return PlayState.NOT_WATCHED
+            elif (self.total_time - self.current_time) < 180:
+                return PlayState.WATCHED
+            else:
+                return PlayState.WATCHING
+        except:
+            pass
         else:
-            return PlayState.WATCHING
+            return PlayState.NOT_WATCHED
 
     def to_json(self):
         # transform into dict list

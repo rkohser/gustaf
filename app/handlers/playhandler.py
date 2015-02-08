@@ -3,7 +3,7 @@ import tornado.ioloop
 import json
 
 from model import Episode, PlayState
-from core import VLCProcess, VLCState
+from core import VLCProcess, VLCState, VLCStatus
 from core import register_handler, get_handler
 from core import PlayStateManager
 from core import Message
@@ -19,7 +19,7 @@ class PlayHandler(tornado.websocket.WebSocketHandler):
         self.episode_state = None
         self.last_current_time = None
         self.last_total_time = None
-        self.old_state = PlayState.NOT_WATCHED
+        self.last_status = VLCStatus("stopped")
 
     def initialize(self, name):
         register_handler(name, self)
@@ -41,16 +41,19 @@ class PlayHandler(tornado.websocket.WebSocketHandler):
         print("Play webSocket closed")
 
     def on_play_end(self):
+        state = self.last_status.deduce_episode_state()
+        PlayStateManager.update_episode(self.episode_id, state, state, self.last_status.current_time)
+
         self.write_message(json.dumps({'state': 'stopped'}))
 
     def on_play_progress(self, status):
         state = status.deduce_episode_state()
-        if self.old_state != state:
-            msg_list = PlayStateManager.update_episode(self.episode_id, self.old_state, state, status.current_time)
+        old_state = self.last_status.deduce_episode_state()
+        if old_state != state:
+            msg_list = PlayStateManager.update_episode(self.episode_id, old_state, state, status.current_time)
             get_handler('show').write_message(Message.to_json(msg_list))
 
-            self.old_state = state
-
+        self.last_status = status
         self.write_message(status.to_json())
 
     def write_message(self, message):

@@ -16,8 +16,9 @@ class PlayStateManager:
         # update episode state label
         msg_list.append(Message(MessageType.UPDATE_EPISODE_STATE, episode_id=episode_id, state=new_state))
 
-        # cascade season state
-        msg_list.extend(PlayStateManager.cascade_season_state(episode_id, old_episode_state, new_state))
+        # cascade season state if actual state change
+        if old_episode_state != new_state:
+            msg_list.extend(PlayStateManager.cascade_season_state(episode_id, old_episode_state, new_state))
 
         # commit db changes
         if new_state == PlayState.WATCHED:
