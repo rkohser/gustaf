@@ -6,7 +6,7 @@ from model import Episode
 from core import VLCProcess, VLCState
 from core import register_handler, get_handler
 from core import PlayStateManager
-from core import Message
+from core import Message, MessageType, parse_message
 
 
 class PlayHandler(tornado.websocket.WebSocketHandler):
@@ -28,20 +28,21 @@ class PlayHandler(tornado.websocket.WebSocketHandler):
     def open(self):
         print("Play webSocket opened")
 
-    def on_message(self, episode_id):
+    def on_message(self, message):
         """
         Handles message from the websocket
-        :param episode_id:
+        :param message:
         :return:
         """
-        if not self.episode_id:
-            self.episode_id = episode_id
-            episode = Episode.get(id=episode_id)
-            self.last_play_state = episode.episode_state
-            self.vlc.play(episode.path, episode.current_time)
-
-        else:
-            print("Already playing, close first instance and retry")
+        msg = parse_message(message)
+        if msg.message_type == MessageType.PLAY_EPISODE:
+            if not self.episode_id:
+                self.episode_id = msg.episode_id
+                episode = Episode.get(id=msg.episode_id)
+                self.last_play_state = episode.episode_state
+                self.vlc.play(episode.path, episode.current_time)
+            else:
+                print("Already playing, close first instance and retry")
 
     def on_close(self):
         print("Play webSocket closed")

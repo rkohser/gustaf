@@ -68,6 +68,7 @@ class Episode(BaseModel):
     season = ForeignKeyField(Season, related_name='episodes')
     episode_number = IntegerField()
     path = CharField()
+    has_subtitles = BooleanField(default=False)
     current_time = FloatField(default=0.0)
     episode_state = PlayStateField(default=PlayState.NOT_WATCHED)
 

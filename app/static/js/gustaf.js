@@ -2,6 +2,25 @@
 
 $(document).ready(function(){
 
+    var spin_opts = {
+        lines: 8, // The number of lines to draw
+        length: 3, // The length of each line
+        width: 5, // The line thickness
+        radius: 9, // The radius of the inner circle
+        corners: 1, // Corner roundness (0..1)
+        rotate: 8, // The rotation offset
+        direction: 1, // 1: clockwise, -1: counterclockwise
+        color: '#000', // #rgb or #rrggbb or array of colors
+        speed: 0.9, // Rounds per second
+        trail: 63, // Afterglow percentage
+        shadow: false, // Whether to render a shadow
+        hwaccel: false, // Whether to use hardware acceleration
+        className: 'spinner', // The CSS class to assign to the spinner
+        zIndex: 2e9, // The z-index (defaults to 2000000000)
+        top: '50%', // Top position relative to parent
+        left: '50%' // Left position relative to parent
+    };
+
     // Init page
     $('#progress').hide();
 
@@ -28,6 +47,9 @@ $(document).ready(function(){
                 break;
             case "update_show_state":
                 setShowState(msg.show_id, msg.state);
+                break;
+            case "get_subtitles":
+                setSubtitleState(msg.episode_id, msg.result)
                 break;
             };
         };       
@@ -65,7 +87,21 @@ $(document).ready(function(){
 
     // to play the given episode
     gustaf.play = function(episode_id) {
-        gustaf.play_ws.send(episode_id);
+        var message = {};
+        message.action = "play_episode";
+        message.episode_id = episode_id;
+        gustaf.play_ws.send(JSON.stringify(message));
+    };
+
+    // to get subtitles for the given episode
+    gustaf.get_subtitles = function(episode_id) {
+        var message = {};
+        message.action = "get_subtitles";
+        message.episode_id = episode_id;
+        gustaf.show_ws.send(JSON.stringify(message));
+
+        $("#sub_episode_" + episode_id).spin(spin_opts)
+            .css("position","relative");
     };
 
     // to manage the play state
@@ -106,5 +142,11 @@ $(document).ready(function(){
         $("#state_show_" + show_id)
             .removeClass()
             .addClass("btn btn-" + stateArray[2]);
+    };
+    setSubtitleState = function(episode_id, result) {
+        $("#sub_episode_" + episode_id)
+            .spin(false)
+            .removeClass()
+            .addClass("btn btn-" + result);
     };
 });

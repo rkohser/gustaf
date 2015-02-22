@@ -18,6 +18,8 @@ class MessageType(Enum):
     UPDATE_EPISODE_STATE = "update_episode_state"
     UPDATE_SEASON_STATE = "update_season_state"
     UPDATE_SHOW_STATE = "update_show_state"
+    PLAY_EPISODE = "play_episode"
+    GET_SUBTITLES = "get_subtitles"
 
     def __init__(self, text):
         self.text = text
@@ -42,7 +44,7 @@ class Message(object):
     }
     """
 
-    def __init__(self, message_type, episode_id=None, season_id=None, show_id=None, state=None, data=None):
+    def __init__(self, message_type, episode_id=None, season_id=None, show_id=None, state=None, data=None, result=None):
         assert isinstance(message_type, MessageType)
         self.message_type = message_type
         self.episode_id = episode_id
@@ -50,6 +52,7 @@ class Message(object):
         self.show_id = show_id
         self.state = state
         self.data = data
+        self.result = result
 
     def to_json(self):
         msg = dict()
@@ -82,3 +85,7 @@ def parse_message(msg):
         return Message(mt, season_id=d['season_id'], state=PlayState.from_text(d['state']))
     elif mt == MessageType.UPDATE_SHOW_STATE:
         return Message(mt, show_id=d['show_id'], state=PlayState.from_text(d['state']))
+    elif mt == MessageType.PLAY_EPISODE:
+        return Message(mt, episode_id=d['episode_id'])
+    elif mt == MessageType.GET_SUBTITLES:
+        return Message(mt, episode_id=d['episode_id'])

@@ -6,6 +6,7 @@ import os
 import tornado.ioloop
 import tornado.web
 import tornado.template
+import subliminal
 from model import ModelManager
 from handlers import MainHandler, ShowHandler, PlayHandler
 

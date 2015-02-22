@@ -8,6 +8,7 @@ from peewee import fn
 from model import Season, Episode
 from core import Message, MessageType, parse_message
 from core import register_handler
+from core import get_subs
 
 
 class ShowHandler(tornado.websocket.WebSocketHandler):
@@ -58,6 +59,17 @@ class ShowHandler(tornado.websocket.WebSocketHandler):
 
             message_list = PlayStateManager.handle_message(msg)
             self.write_message(Message.to_json(message_list))
+
+        elif msg.message_type == MessageType.GET_SUBTITLES:
+
+            episode = Episode.get(Episode.id == msg.episode_id)
+            if get_subs(episode.path):
+                msg.result = "success"
+                Episode.update(has_subtitles=True).where(Episode.id == msg.episode_id).execute()
+            else:
+                msg.result = "danger"
+
+            self.write_message(Message.to_json((msg,)))
 
     def write_message(self, message):
         """
