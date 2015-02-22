@@ -61,7 +61,7 @@ class ModelManager:
                 print('Merged "' + show.name + '" season ' + str(parsed_season) + ' episode ' + str(parsed_episode))
             else:
                 try:
-                    episode = Episode.get(Episode.season == season, Episode.episode_number == parsed_episode)
+                    Episode.get(Episode.season == season, Episode.episode_number == parsed_episode)
                 except DoesNotExist:
                     Episode.create(season=season, episode_number=parsed_episode, path=path,
                                    has_subtitles=get_subs(path))

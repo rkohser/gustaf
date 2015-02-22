@@ -6,8 +6,6 @@ import io
 from babelfish import Language
 from subliminal.subtitle import get_subtitle_path
 
-from model import Episode
-
 
 def save_subtitle(video, video_subtitle, encoding=None):
     subtitle_path = get_subtitle_path(video.name, video_subtitle.language)
@@ -30,7 +28,7 @@ def get_subs(episode_path):
             print('Detected subtitles for "' + episode_path)
             return True
         else:
-            subtitles = subliminal.download_best_subtitles((video,), lang, providers=('opensubtitles',))
+            subtitles = subliminal.download_best_subtitles({video, }, lang, providers=['opensubtitles', ])
             for vid, video_subtitles in subtitles.items():
                 if video_subtitles:
                     print('Downloaded subtitles for "' + episode_path)
