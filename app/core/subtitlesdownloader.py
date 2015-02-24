@@ -30,6 +30,8 @@ def get_subs(episode_path):
         else:
             subtitles = subliminal.download_best_subtitles({video, }, lang, providers=['opensubtitles', ])
             for vid, video_subtitles in subtitles.items():
+                for sub in video_subtitles:
+                    save_subtitle(vid, sub)
                 if video_subtitles:
                     print('Downloaded subtitles for "' + episode_path)
                     return True
