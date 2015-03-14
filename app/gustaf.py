@@ -15,6 +15,7 @@ if __name__ == '__main__':
 
     ModelManager.init_model()
     ModelManager.update_model()
+    ModelManager.update_subtitles()
 
     class Application(tornado.web.Application):
         def __init__(self):

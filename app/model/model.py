@@ -1,7 +1,9 @@
 __author__ = 'roland'
 
-from peewee import *
 from enum import Enum, unique
+
+from peewee import *
+
 
 db = SqliteDatabase('gustaf.db')
 
