@@ -5,7 +5,7 @@ __author__ = 'roland'
 import tornado.websocket
 
 from peewee import fn
-from model import Season, Episode
+from model import Show, Season, Episode
 from core import Message, MessageType, parse_message
 from core import register_handler
 from core import get_subs
@@ -35,6 +35,8 @@ class ShowHandler(tornado.websocket.WebSocketHandler):
         msg = parse_message(message)
         if msg.message_type == MessageType.LOAD_SHOW:
 
+            show = Show.get(Show.id == msg.show_id)
+
             subquery = (Episode.select(
                 Episode.season.alias('season_id'),
                 Episode.episode_state.alias('state'),
@@ -52,7 +54,8 @@ class ShowHandler(tornado.websocket.WebSocketHandler):
                        .order_by(Season.season_number.desc(), Episode.episode_number.asc())
                        .aggregate_rows())
 
-            msg.data = self.render_string("episodes.html", seasons=seasons, languages={'eng', 'fra'}).decode()
+            msg.data = self.render_string("episodes.html", show_name=show.name, seasons=seasons,
+                                          languages={'eng', 'fra'}).decode()
             self.write_message(Message.to_json((msg,)))
 
         elif msg.message_type == MessageType.UPDATE_SEASON_STATE or msg.message_type == MessageType.UPDATE_EPISODE_STATE:
