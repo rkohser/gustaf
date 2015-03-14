@@ -1,3 +1,5 @@
+from babelfish import language
+
 __author__ = 'roland'
 
 from model import PlayState
@@ -35,16 +37,18 @@ class Message(object):
     Handles message from the websocket
     message:
     {
-        "type": "load_show"|"update_episode_state"|"update_season_state"|"update_show_state"
+        "type": "load_show"|"update_episode_state"|"update_season_state"|"update_show_state"|"get_subtitles"
         "episode_id": int id
         "season_id": int id
         "show_id": int id
         "state": json_dump from a model state enum
         "data": ex:html content
+        "language": ex:"eng"
     }
     """
 
-    def __init__(self, message_type, episode_id=None, season_id=None, show_id=None, state=None, data=None, result=None):
+    def __init__(self, message_type, episode_id=None, season_id=None, show_id=None, state=None, data=None, result=None,
+                 language=None):
         assert isinstance(message_type, MessageType)
         self.message_type = message_type
         self.episode_id = episode_id
@@ -53,6 +57,7 @@ class Message(object):
         self.state = state
         self.data = data
         self.result = result
+        self.language = language
 
     def to_json(self):
         msg = dict()
@@ -88,4 +93,4 @@ def parse_message(msg):
     elif mt == MessageType.PLAY_EPISODE:
         return Message(mt, episode_id=d['episode_id'])
     elif mt == MessageType.GET_SUBTITLES:
-        return Message(mt, episode_id=d['episode_id'])
+        return Message(mt, episode_id=d['episode_id'], language=d['language'])

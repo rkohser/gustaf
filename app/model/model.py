@@ -50,6 +50,18 @@ class PlayStateField(IntegerField):
         return PlayState.from_num(int(value))
 
 
+class SubtitlesField(CharField):
+    def db_value(self, value):
+        assert isinstance(value, set)
+        return ','.join(value)
+
+    def python_value(self, value):
+        if value:
+            return set(value.split(','))
+        else:
+            return set()
+
+
 class BaseModel(Model):
     class Meta:
         database = db
@@ -68,7 +80,7 @@ class Episode(BaseModel):
     season = ForeignKeyField(Season, related_name='episodes')
     episode_number = IntegerField()
     path = CharField()
-    has_subtitles = BooleanField(default=False)
+    subtitles = SubtitlesField(default=set())
     current_time = FloatField(default=0.0)
     episode_state = PlayStateField(default=PlayState.NOT_WATCHED)
 

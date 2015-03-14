@@ -9,6 +9,7 @@ from model import Season, Episode
 from core import Message, MessageType, parse_message
 from core import register_handler
 from core import get_subs
+from babelfish import Language
 
 
 class ShowHandler(tornado.websocket.WebSocketHandler):
@@ -52,7 +53,7 @@ class ShowHandler(tornado.websocket.WebSocketHandler):
                        .order_by(Season.season_number.desc(), Episode.episode_number.asc())
                        .aggregate_rows())
 
-            msg.data = self.render_string("episodes.html", seasons=seasons).decode()
+            msg.data = self.render_string("episodes.html", seasons=seasons, languages={'eng', 'fra'}).decode()
             self.write_message(Message.to_json((msg,)))
 
         elif msg.message_type == MessageType.UPDATE_SEASON_STATE or msg.message_type == MessageType.UPDATE_EPISODE_STATE:
@@ -63,9 +64,10 @@ class ShowHandler(tornado.websocket.WebSocketHandler):
         elif msg.message_type == MessageType.GET_SUBTITLES:
 
             episode = Episode.get(Episode.id == msg.episode_id)
-            if get_subs(episode.path):
+            if get_subs(episode.path, {Language(msg.language)}):
                 msg.result = "success"
-                Episode.update(has_subtitles=True).where(Episode.id == msg.episode_id).execute()
+                Episode.update(subtitles=episode.subtitles.union({msg.language})).where(
+                    Episode.id == msg.episode_id).execute()
             else:
                 msg.result = "danger"
 

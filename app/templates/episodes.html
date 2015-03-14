@@ -31,18 +31,20 @@
             </button>
         </td>
         <td>
-            {% if episode.has_subtitles %}
+            {% for language in languages %}
+            {% if language in episode.subtitles %}
             {% set sub_state = "btn-success" %}
             {% else %}
-            {% set sub_state = "btn-primary" %}
+            {% set sub_state = "btn-danger" %}
             {% end %}
-            <button id="sub_episode_{{ episode.id }}" type="button" class="btn {{sub_state}}"
-                    onclick="gustaf.get_subtitles({{ episode.id }})">
-                <span class="glyphicon glyphicon-subtitles"></span>
+            <button id="sub_episode_{{ episode.id }}_{{language}}" type="button" class="btn {{sub_state}}"
+                    onclick="gustaf.get_subtitles({{ episode.id }}, '{{language}}')">
+                <span class="glyphicon glyphicon-subtitles"></span><b> {{language}}</b>
             </button>
+            {% end %}
         </td>
         <td>
-            <a id="state_episode_{{ episode.id }}" class="label label-{{ episode.episode_state.label }}" href="#"
+        <a id="state_episode_{{ episode.id }}" class="label label-{{ episode.episode_state.label }}" href="#"
                onclick="gustaf.toggleEpisodeState($(this), {{ episode.id }});return false;">{{
                 episode.episode_state.text}}</a>
         </td>

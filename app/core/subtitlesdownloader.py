@@ -3,7 +3,6 @@ __author__ = 'roland'
 import subliminal
 import io
 
-from babelfish import Language
 from subliminal.subtitle import get_subtitle_path
 
 
@@ -18,8 +17,7 @@ def save_subtitle(video, video_subtitle, encoding=None):
     return subtitle_path
 
 
-def get_subs(episode_path):
-    lang = {Language('eng'), Language('fra')}
+def get_subs(episode_path, lang):
 
     video = subliminal.scan_video(episode_path)
     if video:
@@ -28,12 +26,12 @@ def get_subs(episode_path):
             print('Detected subtitles for "' + episode_path)
             return True
         else:
-            subtitles = subliminal.download_best_subtitles({video, }, lang, providers=['opensubtitles', ])
+            subtitles = subliminal.download_best_subtitles({video, }, lang,
+                                                           providers=['opensubtitles', 'addic7ed', 'podnapisi'])
             for vid, video_subtitles in subtitles.items():
-                for sub in video_subtitles:
-                    save_subtitle(vid, sub)
                 if video_subtitles:
-                    print('Downloaded subtitles for "' + episode_path)
+                    for sub in video_subtitles:
+                        print('Downloaded subtitles "' + save_subtitle(vid, sub) + '" for "' + episode_path + '"')
                     return True
 
     return False

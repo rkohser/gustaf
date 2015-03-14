@@ -49,7 +49,7 @@ $(document).ready(function(){
                 setShowState(msg.show_id, msg.state);
                 break;
             case "get_subtitles":
-                setSubtitleState(msg.episode_id, msg.result)
+                setSubtitleState(msg.episode_id, msg.language, msg.result)
                 break;
             };
         };       
@@ -94,13 +94,14 @@ $(document).ready(function(){
     };
 
     // to get subtitles for the given episode
-    gustaf.get_subtitles = function(episode_id) {
+    gustaf.get_subtitles = function(episode_id, lang) {
         var message = {};
         message.action = "get_subtitles";
         message.episode_id = episode_id;
+        message.language = lang
         gustaf.show_ws.send(JSON.stringify(message));
 
-        $("#sub_episode_" + episode_id).spin(spin_opts)
+        $("#sub_episode_" + episode_id + "_" + lang).spin(spin_opts)
             .css("position","relative");
     };
 
@@ -143,8 +144,8 @@ $(document).ready(function(){
             .removeClass()
             .addClass("btn btn-" + stateArray[2]);
     };
-    setSubtitleState = function(episode_id, result) {
-        $("#sub_episode_" + episode_id)
+    setSubtitleState = function(episode_id, language, result) {
+        $("#sub_episode_" + episode_id + "_" + language)
             .spin(false)
             .removeClass()
             .addClass("btn btn-" + result);
