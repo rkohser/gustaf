@@ -43,8 +43,6 @@ class ModelManager:
         parsed_season = info['season']
         parsed_episode = info['episodeNumber']
 
-        languages = {'eng', 'fra'}
-
         try:
             show = Show.get(Show.name == show_name)
         except DoesNotExist:

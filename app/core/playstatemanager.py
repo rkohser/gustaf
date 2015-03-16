@@ -9,7 +9,7 @@ from model import Season, Episode, PlayState
 
 class PlayStateManager:
     @staticmethod
-    def update_episode(episode_id, old_episode_state, new_state, current_time=0.0):
+    def update_episode(episode_id, old_episode_state, new_state, current_time, total_time):
 
         msg_list = list()
 
@@ -22,7 +22,7 @@ class PlayStateManager:
 
         # commit db changes
         tornado.ioloop.IOLoop.instance().add_callback(
-            PlayStateManager.set_episode_state, episode_id, new_state, current_time)
+            PlayStateManager.set_episode_state, episode_id, new_state, current_time, total_time)
 
         return msg_list
 
@@ -62,14 +62,15 @@ class PlayStateManager:
         return msg_list
 
     @staticmethod
-    def set_episode_state(episode_id, state, current_time=0.0):
+    def set_episode_state(episode_id, state, current_time=0.0, total_time=0.0):
         if state == PlayState.WATCHED:
             current_time = 0.0
-        Episode.update(episode_state=state, current_time=current_time).where(Episode.id == episode_id).execute()
+        Episode.update(episode_state=state, current_time=current_time, total_time=total_time).where(
+            Episode.id == episode_id).execute()
 
     @staticmethod
     def set_season_state(season_id, state):
-        Episode.update(episode_state=state).where(Episode.season == season_id).execute()
+        Episode.update(episode_state=state, current_time=0.0).where(Episode.season == season_id).execute()
 
     @staticmethod
     def process_parent_state(old_child_state, new_child_state, other_children_state, other_children_state_count):

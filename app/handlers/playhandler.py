@@ -20,7 +20,7 @@ class PlayHandler(tornado.websocket.WebSocketHandler):
         self.last_current_time = None
         self.last_total_time = None
         self.last_status = None
-        self.last_play_state = None
+        self.last_episode_state = None
 
     def initialize(self, name):
         register_handler(name, self)
@@ -39,7 +39,7 @@ class PlayHandler(tornado.websocket.WebSocketHandler):
             if not self.episode_id:
                 self.episode_id = msg.episode_id
                 episode = Episode.get(id=msg.episode_id)
-                self.last_play_state = episode.episode_state
+                self.last_episode_state = episode.episode_state
                 self.vlc.play(episode.path, episode.current_time)
             else:
                 print("Already playing, close first instance and retry")
@@ -48,29 +48,56 @@ class PlayHandler(tornado.websocket.WebSocketHandler):
         print("Play webSocket closed")
 
     def on_play_end(self):
+        msg_list = []
         if self.last_status:
-            PlayStateManager.update_episode(self.episode_id, self.last_play_state, self.last_play_state,
-                                            self.last_status.current_time)
-        self.write_message(json.dumps({'state': 'stopped'}))
+            PlayStateManager.update_episode(self.episode_id, self.last_episode_state, self.last_episode_state,
+                                            self.last_status.current_time, self.last_status.total_time)
+
+            msg_list.append(Message(MessageType.UPDATE_EPISODE_STATE, episode_id=self.episode_id,
+                                    state=self.last_episode_state,
+                                    current_time=self.last_status.current_time,
+                                    total_time=self.last_status.total_time,
+                                    play_state=VLCState.STOPPED))
+
+            get_handler('show').write_message(Message.to_json(msg_list))
+
         self.episode_id = None
         self.episode_state = None
         self.last_current_time = None
         self.last_total_time = None
         self.last_status = None
-        self.last_play_state = None
+        self.last_episode_state = None
 
     def on_play_progress(self, status):
 
+        msg_list = []
         if status.state == VLCState.PLAYING:
-            state = status.deduce_episode_state()
-            old_state = self.last_play_state
-            if old_state != state:
-                msg_list = PlayStateManager.update_episode(self.episode_id, old_state, state, status.current_time)
-                get_handler('show').write_message(Message.to_json(msg_list))
+            episode_state = status.deduce_episode_state()
+            old_episode_state = self.last_episode_state
+            self.last_episode_state = episode_state
 
-            self.last_status = status
-            self.last_play_state = state
-        self.write_message(status.to_json())
+            if old_episode_state != episode_state:
+                msg_list.extend(PlayStateManager.update_episode(self.episode_id, old_episode_state, episode_state,
+                                                                status.current_time, status.total_time))
+
+        # Play progress
+        if msg_list:
+            episode_message = msg_list[0]
+            assert episode_message.message_type == MessageType.UPDATE_EPISODE_STATE
+            episode_message.current_time = status.current_time
+            episode_message.total_time = status.total_time
+            episode_message.play_state = status.state
+        else:
+            msg_list.append(Message(MessageType.UPDATE_EPISODE_STATE, episode_id=self.episode_id,
+                                    state=episode_state,
+                                    current_time=status.current_time,
+                                    total_time=status.total_time,
+                                    play_state=status.state))
+
+        get_handler('show').write_message(Message.to_json(msg_list))
+
+        self.last_status = status
+        # self.write_message(status.to_json())
 
     def write_message(self, message):
         """

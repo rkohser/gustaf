@@ -58,7 +58,14 @@ class ShowHandler(tornado.websocket.WebSocketHandler):
                                           languages={'eng', 'fra'}).decode()
             self.write_message(Message.to_json((msg,)))
 
-        elif msg.message_type == MessageType.UPDATE_SEASON_STATE or msg.message_type == MessageType.UPDATE_EPISODE_STATE:
+        elif msg.message_type == MessageType.UPDATE_EPISODE_STATE:
+
+            old_state, = (Episode.select(Episode.episode_state).where(Episode.id == msg.episode_id).tuples()).get()
+            msg.state = old_state
+            message_list = PlayStateManager.handle_message(msg)
+            self.write_message(Message.to_json(message_list))
+
+        elif msg.message_type == MessageType.UPDATE_SEASON_STATE:
 
             message_list = PlayStateManager.handle_message(msg)
             self.write_message(Message.to_json(message_list))

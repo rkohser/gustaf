@@ -40,7 +40,7 @@ $(document).ready(function(){
                 $('#episodes').html(msg.data);
                 break;
             case "update_episode_state":
-                setEpisodeState(msg.episode_id, msg.state);
+                setEpisodeState(msg.episode_id, msg.state, msg.current_time, msg.total_time, msg.play_state);
                 break;
             case "update_season_state":
                 setSeasonState(msg.season_id, msg.state);
@@ -49,8 +49,10 @@ $(document).ready(function(){
                 setShowState(msg.show_id, msg.state);
                 break;
             case "get_subtitles":
-                setSubtitleState(msg.episode_id, msg.language, msg.result)
+                setSubtitleState(msg.episode_id, msg.language, msg.result);
                 break;
+            case "update_episode_progress":
+                setEpisodeProgress(msg.episode_id, msg.current_time, msg.total_time, msg.play_state);
             };
         };       
     };
@@ -110,7 +112,6 @@ $(document).ready(function(){
         var message = {};
         message.action = "update_episode_state";
         message.episode_id = episode_id;
-        message.state = object.text();
         gustaf.show_ws.send(JSON.stringify(message));
     };
 
@@ -122,12 +123,34 @@ $(document).ready(function(){
         gustaf.show_ws.send(JSON.stringify(message));
     };
 
-    setEpisodeState = function(episode_id, stateArray) {
-        // select element with id
-        $("#state_episode_" + episode_id)
+    setEpisodeState = function(episode_id, stateArray, current_time, total_time, play_state) {
+
+        //full progress bar if not playing
+        var progress = 100;
+        if (stateArray[1] == "Watching") {
+            progress = current_time / total_time * 100;
+        };
+
+        var progress_elt = $("#progress_episode_" + episode_id);
+        
+        //update progress
+        progress_elt.attr("style", "width: " + progress + "%")
+            .attr("aria-valuenow", progress)
             .removeClass()
-            .addClass("label label-" + stateArray[2])
+            .addClass("progress-bar progress-bar-" + stateArray[2]);
+
+        //update text
+        $("#progress_episode_" + episode_id + " > span")
             .text(stateArray[1]);
+
+        //active stripes
+        if (play_state == "playing") {
+            progress_elt.addClass("progress-bar-striped")
+            .addClass("active");
+        } else {
+            progress_elt.removeClass("active")
+                .removeClass("progress-bar-striped");
+        };
     };
 
     setSeasonState = function(season_id, stateArray) {
@@ -144,6 +167,7 @@ $(document).ready(function(){
             .removeClass()
             .addClass("btn btn-" + stateArray[2]);
     };
+
     setSubtitleState = function(episode_id, language, result) {
         $("#sub_episode_" + episode_id + "_" + language)
             .spin(false)

@@ -84,6 +84,7 @@ class Episode(BaseModel):
     path = CharField()
     subtitles = SubtitlesField(default=set())
     current_time = FloatField(default=0.0)
+    total_time = FloatField(default=0.0)
     episode_state = PlayStateField(default=PlayState.NOT_WATCHED)
 
 

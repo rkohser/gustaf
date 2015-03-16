@@ -41,3 +41,18 @@ body {
     bottom: 0px;
     height: 60px;
 }
+
+/**
+ * Progress bars with centered text
+ */
+
+.progress {
+    position: relative;
+}
+
+.progress span {
+    position: absolute;
+    display: block;
+    width: 100%;
+    color: white;
+ }

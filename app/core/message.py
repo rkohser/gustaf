@@ -44,11 +44,14 @@ class Message(object):
         "state": json_dump from a model state enum
         "data": ex:html content
         "language": ex:"eng"
+        "current_time": float
+        "total_time": float
+        "play_state": "playing"|"stopped"|"paused"
     }
     """
 
     def __init__(self, message_type, episode_id=None, season_id=None, show_id=None, state=None, data=None, result=None,
-                 language=None):
+                 lang=None, current_time=None, total_time=None, play_state=None):
         assert isinstance(message_type, MessageType)
         self.message_type = message_type
         self.episode_id = episode_id
@@ -57,21 +60,10 @@ class Message(object):
         self.state = state
         self.data = data
         self.result = result
-        self.language = language
-
-    def to_json(self):
-        msg = dict()
-        msg['action'] = self.message_type.text
-        if self.message_type == MessageType.LOAD_SHOW:
-            msg['show_id'] = self.show_id
-            msg['data'] = self.data
-        elif self.message_type == MessageType.UPDATE_EPISODE_STATE:
-            msg['episode_id'] = self.episode_id
-            msg['state'] = self.state.value
-        elif self.message_type == MessageType.UPDATE_SEASON_STATE:
-            msg['season_id'] = self.season_id
-            msg['state'] = self.state.value
-        return json.dumps(msg)
+        self.lang = lang
+        self.current_time = current_time
+        self.total_time = total_time
+        self.play_state = play_state
 
     @staticmethod
     def to_json(msg_list):
@@ -85,7 +77,7 @@ def parse_message(msg):
     if mt == MessageType.LOAD_SHOW:
         return Message(mt, show_id=d['show_id'])
     elif mt == MessageType.UPDATE_EPISODE_STATE:
-        return Message(mt, episode_id=d['episode_id'], state=PlayState.from_text(d['state']))
+        return Message(mt, episode_id=d['episode_id'])
     elif mt == MessageType.UPDATE_SEASON_STATE:
         return Message(mt, season_id=d['season_id'], state=PlayState.from_text(d['state']))
     elif mt == MessageType.UPDATE_SHOW_STATE:
@@ -93,4 +85,4 @@ def parse_message(msg):
     elif mt == MessageType.PLAY_EPISODE:
         return Message(mt, episode_id=d['episode_id'])
     elif mt == MessageType.GET_SUBTITLES:
-        return Message(mt, episode_id=d['episode_id'], language=d['language'])
+        return Message(mt, episode_id=d['episode_id'], lang=d['language'])
