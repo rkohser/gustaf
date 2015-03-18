@@ -1,3 +1,5 @@
+import datetime
+
 __author__ = 'roland'
 
 import tornado.ioloop
@@ -63,9 +65,17 @@ class PlayStateManager:
 
     @staticmethod
     def set_episode_state(episode_id, state, current_time=0.0, total_time=0.0):
-        if state == PlayState.WATCHED:
+        # store surrent time onlw if watching
+        if state != PlayState.WATCHING:
             current_time = 0.0
-        Episode.update(episode_state=state, current_time=current_time, total_time=total_time).where(
+
+        # store last watched datetime only for watched and watching
+        if state != PlayState.NOT_WATCHED:
+            last_watched = datetime.datetime.now()
+        else:
+            last_watched = None
+        Episode.update(episode_state=state, current_time=current_time, total_time=total_time,
+                       last_watched=last_watched).where(
             Episode.id == episode_id).execute()
 
     @staticmethod
