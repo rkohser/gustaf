@@ -1,6 +1,7 @@
 __author__ = 'roland'
 
 import re
+import datetime
 from peewee import DoesNotExist
 
 from model import Show, Season, Episode, db, PlayState
@@ -49,7 +50,7 @@ class ModelManager:
             # Show does not exist yet
             show = Show.create(name=show_name)
             season = Season.create(show=show, season_number=parsed_season)
-            Episode.create(season=season, episode_number=parsed_episode, path=path)
+            Episode.create(season=season, episode_number=parsed_episode, path=path, added_time=datetime.datetime.now())
             print('Merged "' + show.name + '" season ' + str(parsed_season) + ' episode ' + str(parsed_episode))
         else:
             try:
@@ -57,13 +58,15 @@ class ModelManager:
             except DoesNotExist:
                 # Season did not exist yet
                 season = Season.create(show=show, season_numbernumber=parsed_season)
-                Episode.create(season=season, episode_number=parsed_episode, path=path)
+                Episode.create(season=season, episode_number=parsed_episode, path=path,
+                               added_time=datetime.datetime.now())
                 print('Merged "' + show.name + '" season ' + str(parsed_season) + ' episode ' + str(parsed_episode))
             else:
                 try:
                     Episode.get(Episode.season == season, Episode.episode_number == parsed_episode)
                 except DoesNotExist:
-                    Episode.create(season=season, episode_number=parsed_episode, path=path)
+                    Episode.create(season=season, episode_number=parsed_episode, path=path,
+                                   added_time=datetime.datetime.now())
                     print('Merged "' + show.name + '" season ' + str(parsed_season) + ' episode ' + str(parsed_episode))
                     # else:
                     # print('"' + show.name + '" season ' + parsed_season + ' episode ' + parsed_episode + ' already in db')

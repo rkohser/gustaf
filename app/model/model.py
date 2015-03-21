@@ -87,6 +87,7 @@ class Episode(BaseModel):
     total_time = FloatField(default=0.0)
     episode_state = PlayStateField(default=PlayState.NOT_WATCHED)
     last_watched = DateTimeField()
+    added_time = DateTimeField()
 
 
 class Source(BaseModel):
