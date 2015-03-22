@@ -5,8 +5,8 @@
 {% for show in shows %}
 <button id="state_show_{{show['id']}}" type="button"
         class="btn btn-{% if show['state_count'] == 1 %}{{show['state'].label}}{% else %}warning{% end %}"
-        onclick="gustaf.getEpisodesForShow({{show['id']}})">
-    {{ escape(show['name'].title()) }}
+        onclick="gustaf.getEpisodesForShow({{show['id']}}, '{{show['name']}}')">
+{{ escape(show['name'].title()) }}
 </button>
 {% end %}
 {% else %}

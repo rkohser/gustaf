@@ -1,6 +1,6 @@
 {% from model import PlayState %}
-{% for season in seasons %}
 <h1>{{ escape(str(show_name.title())) }}</h1>
+{% for season in seasons %}
 <h1>Season {{ escape(str(season.season_number)) }}</h1>
 <table class="table table-hover">
     <thead>

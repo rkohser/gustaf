@@ -41,6 +41,7 @@ class Message(object):
         "episode_id": int id
         "season_id": int id
         "show_id": int id
+        "show_name": name of the show
         "state": json_dump from a model state enum
         "data": ex:html content
         "language": ex:"eng"
@@ -50,13 +51,15 @@ class Message(object):
     }
     """
 
-    def __init__(self, message_type, episode_id=None, season_id=None, show_id=None, state=None, data=None, result=None,
+    def __init__(self, message_type, episode_id=None, season_id=None, show_id=None, show_name=None, state=None,
+                 data=None, result=None,
                  lang=None, current_time=None, total_time=None, play_state=None):
         assert isinstance(message_type, MessageType)
         self.message_type = message_type
         self.episode_id = episode_id
         self.season_id = season_id
         self.show_id = show_id
+        self.show_name = show_name
         self.state = state
         self.data = data
         self.result = result
@@ -75,7 +78,7 @@ def parse_message(msg):
     d = json.loads(msg)
     mt = MessageType.from_text(d['action'])
     if mt == MessageType.LOAD_SHOW:
-        return Message(mt, show_id=d['show_id'])
+        return Message(mt, show_id=d['show_id'], show_name=d['show_name'])
     elif mt == MessageType.UPDATE_EPISODE_STATE:
         return Message(mt, episode_id=d['episode_id'])
     elif mt == MessageType.UPDATE_SEASON_STATE:

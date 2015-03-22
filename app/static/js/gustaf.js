@@ -80,10 +80,11 @@ $(document).ready(function(){
     };
 
     // to request the episode list
-    gustaf.getEpisodesForShow = function(showId) {
+    gustaf.getEpisodesForShow = function(showId, showName) {
         var message = {};
         message.action = "load_show";
         message.show_id = showId;
+        message.show_name = showName;
         gustaf.show_ws.send(JSON.stringify(message));
     };
 
