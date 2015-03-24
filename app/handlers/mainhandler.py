@@ -3,7 +3,7 @@ __author__ = 'roland'
 import tornado.web
 
 from peewee import fn
-from model import Show, Season, Episode
+from model import Show, Season, Episode, PlayState
 
 
 class MainHandler(tornado.web.RequestHandler):
@@ -16,4 +16,14 @@ class MainHandler(tornado.web.RequestHandler):
                  .group_by(Show.id)
                  .dicts())
 
-        self.render("shows.html", shows=shows)
+        # Build dashboard info
+        watching_epsiodes = (Episode.select(Show.name.alias('show_name'),
+                                            Season.season_number.alias('season_number'),
+                                            Episode)
+                             .join(Season)
+                             .join(Show)
+                             .where(Episode.episode_state == PlayState.WATCHING)
+                             .order_by(Episode.last_watched.desc())
+                             .dicts())
+
+        self.render("shows.html", shows=shows, languages={'eng', 'fra'}, watching_episodes=watching_epsiodes)
