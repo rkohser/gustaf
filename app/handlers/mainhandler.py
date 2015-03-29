@@ -17,13 +17,26 @@ class MainHandler(tornado.web.RequestHandler):
                  .dicts())
 
         # Build dashboard info
-        watching_epsiodes = (Episode.select(Show.name.alias('show_name'),
-                                            Season.season_number.alias('season_number'),
-                                            Episode)
-                             .join(Season)
-                             .join(Show)
-                             .where(Episode.episode_state == PlayState.WATCHING)
-                             .order_by(Episode.last_watched.desc())
-                             .dicts())
+        started_episodes = (Episode.select(Show.name.alias('show_name'),
+                                           Season.season_number.alias('season_number'),
+                                           Episode)
+                            .join(Season)
+                            .join(Show)
+                            .where(Episode.episode_state == PlayState.WATCHING)
+                            .order_by(Episode.last_watched.desc())
+                            .dicts())
 
-        self.render("shows.html", shows=shows, languages={'eng', 'fra'}, watching_episodes=watching_epsiodes)
+        next_episodes = (Episode.select(Show.name.alias('show_name'),
+                                        Season.season_number.alias('season_number'),
+                                        fn.Min(Episode.episode_number).alias('episode_number'),
+                                        Episode)
+                         .join(Season)
+                         .join(Show)
+                         .where(Episode.episode_state == PlayState.NOT_WATCHED)
+                         .group_by(Show.id)
+                         .having(Episode.episode_number > 1)
+                         .order_by(Episode.added_time.desc())
+                         .dicts())
+
+        self.render("shows.html", shows=shows, languages={'eng', 'fra'}, started_episodes=started_episodes,
+                    next_episodes=next_episodes)

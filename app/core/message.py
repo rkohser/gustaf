@@ -1,10 +1,9 @@
-from babelfish import language
-
 __author__ = 'roland'
 
-from model import PlayState
 from enum import Enum, unique
 import json
+
+from model import PlayState
 
 
 class EnumEncoder(json.JSONEncoder):

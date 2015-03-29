@@ -1,9 +1,9 @@
 import telnetlib
+import json
+from enum import Enum, unique
+
 from model import PlayState
 import re
-import json
-
-from enum import Enum, unique
 
 
 class WrongPasswordError(Exception):

@@ -6,7 +6,7 @@
 <button id="state_show_{{show['id']}}" type="button"
         class="btn btn-{% if show['state_count'] == 1 %}{{show['state'].label}}{% else %}warning{% end %}"
         onclick="gustaf.getEpisodesForShow({{show['id']}}, '{{show['name']}}')">
-{{ escape(show['name'].title()) }}
+    {{ escape(show['name'].title()) }}
 </button>
 {% end %}
 {% else %}
@@ -17,13 +17,13 @@
 {% end %}
 
 {% block dashboard %}
-<h1>Dashboard</h1>
-<h2>Started watching</h2>
+{% if started_episodes.exists() %}
+<h1>Started watching</h1>
 <table class="table table-hover">
-    {% for episode in watching_episodes %}
+    {% for episode in started_episodes %}
     <tr>
         <td>
-            {{episode['show_name'].title()}} {{episode['season_number']}}x{{episode['episode_number']}}
+            <b>{{episode['show_name'].title()}} {{episode['season_number']}}x{{episode['episode_number']}}</b>
         </td>
         <td>
             <button type="button" class="btn btn-primary" onclick="gustaf.play({{ episode['id'] }})">
@@ -58,4 +58,48 @@
     </tr>
     {% end %}
 </table>
+{% end %}
+
+{% if next_episodes.exists() %}
+<h1>Next episodes</h1>
+<table class="table table-hover">
+    {% for episode in next_episodes %}
+    <tr>
+        <td>
+            <b>{{episode['show_name'].title()}} {{episode['season_number']}}x{{episode['episode_number']}}</b>
+        </td>
+        <td>
+            <button type="button" class="btn btn-primary" onclick="gustaf.play({{ episode['id'] }})">
+                <span class="glyphicon glyphicon-play"></span>
+            </button>
+        </td>
+        <td>
+            {% for language in languages %}
+            {% if language in episode['subtitles'] %}
+            {% set sub_state = "btn-success" %}
+            {% else %}
+            {% set sub_state = "btn-danger" %}
+            {% end %}
+            <button id="sub_episode_{{ episode['id'] }}_{{language}}" type="button" class="btn {{sub_state}}"
+                    onclick="gustaf.get_subtitles({{ episode['id'] }}, '{{language}}')">
+                <span class="glyphicon glyphicon-subtitles"></span><b> {{language}}</b>
+            </button>
+            {% end %}
+        </td>
+        <td>
+            {% set episode_progress = 100.0 %}
+            <a href="#" onclick="gustaf.toggleEpisodeState($(this), {{ episode['id'] }});return false;">
+                <div class="progress">
+                    <div id="progress_episode_{{ episode['id'] }}"
+                         class="progress-bar progress-bar-{{ episode['episode_state'].label }}" role="progressbar"
+                         aria-valuenow="{{episode_progress}}"
+                         aria-valuemin="0" aria-valuemax="100" style="width: {{episode_progress}}%">
+                    </div>
+                </div>
+            </a>
+        </td>
+    </tr>
+    {% end %}
+</table>
+{% end %}
 {% end %}
