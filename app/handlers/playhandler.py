@@ -1,6 +1,5 @@
 import tornado.websocket
 import tornado.ioloop
-import json
 
 from model import Episode
 from core import VLCProcess, VLCState

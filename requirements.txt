@@ -8,6 +8,8 @@ dogpile.core==0.4.1
 enzyme==0.4.1
 guessit==0.10.1
 html5lib==0.999
+Jinja2==2.7.3
+MarkupSafe==0.23
 pbr==0.10.7
 peewee==2.4.7
 pysrt==1.0.1

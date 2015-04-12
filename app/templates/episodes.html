@@ -1,7 +1,6 @@
-{% from model import PlayState %}
-<h1>{{ escape(str(show_name.title())) }}</h1>
+<h1>{{ show_name|title }}</h1>
 {% for season in seasons %}
-<h1>Season {{ escape(str(season.season_number)) }}</h1>
+<h1>Season {{ season.season_number }}</h1>
 <table class="table table-hover">
     <thead>
     <tr>
@@ -13,7 +12,7 @@
             {% set season_state = PlayState.from_num( season.state ) %}
             {% else %}
             {% set season_state = PlayState.WATCHING %}
-            {% end %}
+            {% endif %}
             <a id="state_season_{{ season.id }}"
                class="label label-{{ season_state.label }}"
                href="#"
@@ -37,19 +36,19 @@
             {% set sub_state = "btn-success" %}
             {% else %}
             {% set sub_state = "btn-danger" %}
-            {% end %}
+            {% endif %}
             <button id="sub_episode_{{ episode.id }}_{{language}}" type="button" class="btn {{sub_state}}"
                     onclick="gustaf.get_subtitles({{ episode.id }}, '{{language}}')">
                 <span class="glyphicon glyphicon-subtitles"></span><b> {{language}}</b>
             </button>
-            {% end %}
+            {% endfor %}
         </td>
         <td>
             {% if episode.episode_state == PlayState.WATCHING %}
             {% set episode_progress = int(episode.current_time / episode.total_time * 100.0) %}
             {% else %}
             {% set episode_progress = "100" %}
-            {% end %}
+            {% endif %}
             <a href="#" onclick="gustaf.toggleEpisodeState($(this), {{ episode.id }});return false;">
                 <div class="progress">
                     <div id="progress_episode_{{ episode.id }}"
@@ -61,6 +60,6 @@
             </a>
         </td>
     </tr>
-    {% end %}
+    {% endfor %}
 </table>
-{% end %}
+{% endfor %}

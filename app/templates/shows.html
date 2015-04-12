@@ -4,17 +4,17 @@
 {% if shows %}
 {% for show in shows %}
 <button id="state_show_{{show['id']}}" type="button"
-        class="btn btn-{% if show['state_count'] == 1 %}{{show['state'].label}}{% else %}warning{% end %}"
+        class="btn btn-{% if show['state_count'] == 1 %}{{show['state'].label}}{% else %}warning{% endif %}"
         onclick="gustaf.getEpisodesForShow({{show['id']}}, '{{show['name']}}')">
-    {{ escape(show['name'].title()) }}
+    {{ show['name'].title() }}
 </button>
-{% end %}
+{% endfor %}
 {% else %}
 <button type="button" class="btn btn-default">
     Show name
 </button>
-{% end %}
-{% end %}
+{% endif %}
+{% endblock %}
 
 {% block dashboard %}
 {% if started_episodes.exists() %}
@@ -36,15 +36,15 @@
             {% set sub_state = "btn-success" %}
             {% else %}
             {% set sub_state = "btn-danger" %}
-            {% end %}
+            {% endif %}
             <button id="sub_episode_{{ episode['id'] }}_{{language}}" type="button" class="btn {{sub_state}}"
                     onclick="gustaf.get_subtitles({{ episode['id'] }}, '{{language}}')">
                 <span class="glyphicon glyphicon-subtitles"></span><b> {{language}}</b>
             </button>
-            {% end %}
+            {% endfor %}
         </td>
         <td>
-            {% set episode_progress = int(episode['current_time'] / episode['total_time'] * 100.0) %}
+            {% set episode_progress = episode['current_time'] / episode['total_time'] * 100.0 %}
             <a href="#" onclick="gustaf.toggleEpisodeState($(this), {{ episode['id'] }});return false;">
                 <div class="progress">
                     <div id="progress_episode_{{ episode['id'] }}"
@@ -56,9 +56,9 @@
             </a>
         </td>
     </tr>
-    {% end %}
+    {% endfor %}
 </table>
-{% end %}
+{% endif %}
 
 {% if next_episodes.exists() %}
 <h1>Next episodes</h1>
@@ -79,12 +79,12 @@
             {% set sub_state = "btn-success" %}
             {% else %}
             {% set sub_state = "btn-danger" %}
-            {% end %}
+            {% endif %}
             <button id="sub_episode_{{ episode['id'] }}_{{language}}" type="button" class="btn {{sub_state}}"
                     onclick="gustaf.get_subtitles({{ episode['id'] }}, '{{language}}')">
                 <span class="glyphicon glyphicon-subtitles"></span><b> {{language}}</b>
             </button>
-            {% end %}
+            {% endfor %}
         </td>
         <td>
             {% set episode_progress = 100.0 %}
@@ -99,7 +99,7 @@
             </a>
         </td>
     </tr>
-    {% end %}
+    {% endfor %}
 </table>
-{% end %}
-{% end %}
+{% endif %}
+{% endblock %}

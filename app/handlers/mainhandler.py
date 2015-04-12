@@ -1,12 +1,16 @@
 __author__ = 'roland'
 
 import tornado.web
-
 from peewee import fn
 from model import Show, Season, Episode, PlayState
+from handlers import Jinja2Renderer
 
 
 class MainHandler(tornado.web.RequestHandler):
+    def __init__(self, application, request, **kwargs):
+        super().__init__(application, request, **kwargs)
+        self.renderer = Jinja2Renderer(self.settings)
+
     def get(self):
         shows = (Show.select(Show.id, Show.name, fn.Count(fn.Distinct(Episode.episode_state)).alias('state_count'),
                              Episode.episode_state.alias('state'))
@@ -38,5 +42,6 @@ class MainHandler(tornado.web.RequestHandler):
                          .order_by(Episode.added_time.desc())
                          .dicts())
 
-        self.render("shows.html", shows=shows, languages={'eng', 'fra'}, started_episodes=started_episodes,
-                    next_episodes=next_episodes)
+        self.write(self.renderer.render_string("shows.html", shows=shows, languages={'eng', 'fra'},
+                                               started_episodes=started_episodes,
+                                               next_episodes=next_episodes))

@@ -5,13 +5,18 @@ __author__ = 'roland'
 import tornado.websocket
 
 from peewee import fn
-from model import Show, Season, Episode
+from model import Season, Episode, PlayState
 from core import Message, MessageType, parse_message
 from core import register_handler
 from core import get_subs
+from handlers import Jinja2Renderer
 
 
 class ShowHandler(tornado.websocket.WebSocketHandler):
+    def __init__(self, application, request, **kwargs):
+        super().__init__(application, request, **kwargs)
+        self.renderer = Jinja2Renderer(self.settings)
+
     def initialize(self, name):
         register_handler(name, self)
 
@@ -52,8 +57,8 @@ class ShowHandler(tornado.websocket.WebSocketHandler):
                        .order_by(Season.season_number.desc(), Episode.episode_number.asc())
                        .aggregate_rows())
 
-            msg.data = self.render_string("episodes.html", show_name=msg.show_name, seasons=seasons,
-                                          languages={'eng', 'fra'}).decode()
+            msg.data = self.renderer.render_string("episodes.html", show_name=msg.show_name, seasons=seasons,
+                                                   languages={'eng', 'fra'}, PlayState=PlayState)
             self.write_message(Message.to_json((msg,)))
 
         elif msg.message_type == MessageType.UPDATE_EPISODE_STATE:
