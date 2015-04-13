@@ -57,7 +57,7 @@ class ModelManager:
                 season = Season.get(Season.show == show, Season.season_number == parsed_season)
             except DoesNotExist:
                 # Season did not exist yet
-                season = Season.create(show=show, season_numbernumber=parsed_season)
+                season = Season.create(show=show, season_number=parsed_season)
                 Episode.create(season=season, episode_number=parsed_episode, path=path,
                                added_time=datetime.datetime.now())
                 print('Merged "' + show.name + '" season ' + str(parsed_season) + ' episode ' + str(parsed_episode))
