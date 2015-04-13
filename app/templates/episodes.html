@@ -45,7 +45,7 @@
         </td>
         <td>
             {% if episode.episode_state == PlayState.WATCHING %}
-            {% set episode_progress = int(episode.current_time / episode.total_time * 100.0) %}
+            {% set episode_progress = (episode.current_time / episode.total_time * 100.0)|round %}
             {% else %}
             {% set episode_progress = "100" %}
             {% endif %}
