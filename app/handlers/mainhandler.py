@@ -44,4 +44,5 @@ class MainHandler(tornado.web.RequestHandler):
 
         self.write(self.renderer.render_string("shows.html", shows=shows, languages={'eng', 'fra'},
                                                started_episodes=started_episodes,
-                                               next_episodes=next_episodes))
+                                               next_episodes=next_episodes,
+                                               PlayState=PlayState))

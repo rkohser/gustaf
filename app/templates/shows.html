@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from "episode.html" import episode_tr %}
 
 {% block sidebar %}
 {% if shows %}
@@ -21,41 +22,7 @@
 <h1>Started watching</h1>
 <table class="table table-hover">
     {% for episode in started_episodes %}
-    <tr>
-        <td>
-            <b>{{episode['show_name'].title()}} {{episode['season_number']}}x{{episode['episode_number']}}</b>
-        </td>
-        <td>
-            <button type="button" class="btn btn-primary" onclick="gustaf.play({{ episode['id'] }})">
-                <span class="glyphicon glyphicon-play"></span>
-            </button>
-        </td>
-        <td>
-            {% for language in languages %}
-            {% if language in episode['subtitles'] %}
-            {% set sub_state = "btn-success" %}
-            {% else %}
-            {% set sub_state = "btn-danger" %}
-            {% endif %}
-            <button id="sub_episode_{{ episode['id'] }}_{{language}}" type="button" class="btn {{sub_state}}"
-                    onclick="gustaf.get_subtitles({{ episode['id'] }}, '{{language}}')">
-                <span class="glyphicon glyphicon-subtitles"></span><b> {{language}}</b>
-            </button>
-            {% endfor %}
-        </td>
-        <td>
-            {% set episode_progress = episode['current_time'] / episode['total_time'] * 100.0 %}
-            <a href="#" onclick="gustaf.toggleEpisodeState($(this), {{ episode['id'] }});return false;">
-                <div class="progress">
-                    <div id="progress_episode_{{ episode['id'] }}"
-                         class="progress-bar progress-bar-{{ episode['episode_state'].label }}" role="progressbar"
-                         aria-valuenow="{{episode_progress}}"
-                         aria-valuemin="0" aria-valuemax="100" style="width: {{episode_progress}}%">
-                    </div>
-                </div>
-            </a>
-        </td>
-    </tr>
+    {{ episode_tr(episode, languages, episode['episode_state'] == PlayState.WATCHING) }}
     {% endfor %}
 </table>
 {% endif %}
@@ -64,41 +31,7 @@
 <h1>Next episodes</h1>
 <table class="table table-hover">
     {% for episode in next_episodes %}
-    <tr>
-        <td>
-            <b>{{episode['show_name'].title()}} {{episode['season_number']}}x{{episode['episode_number']}}</b>
-        </td>
-        <td>
-            <button type="button" class="btn btn-primary" onclick="gustaf.play({{ episode['id'] }})">
-                <span class="glyphicon glyphicon-play"></span>
-            </button>
-        </td>
-        <td>
-            {% for language in languages %}
-            {% if language in episode['subtitles'] %}
-            {% set sub_state = "btn-success" %}
-            {% else %}
-            {% set sub_state = "btn-danger" %}
-            {% endif %}
-            <button id="sub_episode_{{ episode['id'] }}_{{language}}" type="button" class="btn {{sub_state}}"
-                    onclick="gustaf.get_subtitles({{ episode['id'] }}, '{{language}}')">
-                <span class="glyphicon glyphicon-subtitles"></span><b> {{language}}</b>
-            </button>
-            {% endfor %}
-        </td>
-        <td>
-            {% set episode_progress = 100.0 %}
-            <a href="#" onclick="gustaf.toggleEpisodeState($(this), {{ episode['id'] }});return false;">
-                <div class="progress">
-                    <div id="progress_episode_{{ episode['id'] }}"
-                         class="progress-bar progress-bar-{{ episode['episode_state'].label }}" role="progressbar"
-                         aria-valuenow="{{episode_progress}}"
-                         aria-valuemin="0" aria-valuemax="100" style="width: {{episode_progress}}%">
-                    </div>
-                </div>
-            </a>
-        </td>
-    </tr>
+    {{ episode_tr(episode, languages, episode['episode_state'] == PlayState.WATCHING) }}
     {% endfor %}
 </table>
 {% endif %}
