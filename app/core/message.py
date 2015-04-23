@@ -87,4 +87,4 @@ def parse_message(msg):
     elif mt == MessageType.PLAY_EPISODE:
         return Message(mt, episode_id=d['episode_id'])
     elif mt == MessageType.GET_SUBTITLES:
-        return Message(mt, episode_id=d['episode_id'], lang=d['language'])
+        return Message(mt, episode_id=d['episode_id'], lang=d['lang'])

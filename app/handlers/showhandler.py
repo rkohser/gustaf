@@ -76,7 +76,7 @@ class ShowHandler(tornado.websocket.WebSocketHandler):
         elif msg.message_type == MessageType.GET_SUBTITLES:
 
             episode = Episode.get(Episode.id == msg.episode_id)
-            new_sub = get_subs(episode.path, {msg.language})
+            new_sub = get_subs(episode.path, {msg.lang})
             if new_sub:
                 msg.result = "success"
                 Episode.update(subtitles=episode.subtitles.union(new_sub)).where(

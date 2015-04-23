@@ -49,7 +49,7 @@ $(document).ready(function(){
                 setShowState(msg.show_id, msg.state);
                 break;
             case "get_subtitles":
-                setSubtitleState(msg.episode_id, msg.language, msg.result);
+                setSubtitleState(msg.episode_id, msg.lang, msg.result);
                 break;
             case "update_episode_progress":
                 setEpisodeProgress(msg.episode_id, msg.current_time, msg.total_time, msg.play_state);
@@ -101,7 +101,7 @@ $(document).ready(function(){
         var message = {};
         message.action = "get_subtitles";
         message.episode_id = episode_id;
-        message.language = lang
+        message.lang = lang
         gustaf.show_ws.send(JSON.stringify(message));
 
         $("#sub_episode_" + episode_id + "_" + lang).spin(spin_opts)
