@@ -1,7 +1,11 @@
-{% macro episode_tr(episode, languages, is_watching) -%}
+{% macro episode_tr(show_name, episode, languages, is_watching) -%}
 <tr>
     <td>
-        <b>{{episode['show_name'].title()}} {{episode['season_number']}}x{{episode['episode_number']}}</b>
+        {% if show_name is not none %}
+        <b>{{show_name.title()}} {{episode['season_number']}}x{{episode['episode_number']}}</b>
+        {% else %}
+        <b>{{episode['episode_number']}}</b>
+        {% endif %}
     </td>
     <td>
         <button type="button" class="btn btn-primary" onclick="gustaf.play({{ episode['id'] }})">

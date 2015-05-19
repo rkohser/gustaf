@@ -43,7 +43,7 @@ class PlayState(Enum):
             return PlayState.NOT_WATCHED
 
 
-class PlayStateField(IntegerField):
+class PlayStateField(IntegerField): 
     def db_value(self, value):
         assert isinstance(value, PlayState)
         return str(value.num)

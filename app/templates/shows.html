@@ -22,7 +22,7 @@
 <h1>Started watching</h1>
 <table class="table table-hover">
     {% for episode in started_episodes %}
-    {{ episode_tr(episode, languages, episode['episode_state'] == PlayState.WATCHING) }}
+    {{ episode_tr(episode['show_name'], episode, languages, episode['episode_state'] == PlayState.WATCHING) }}
     {% endfor %}
 </table>
 {% endif %}
@@ -31,7 +31,7 @@
 <h1>Next episodes</h1>
 <table class="table table-hover">
     {% for episode in next_episodes %}
-    {{ episode_tr(episode, languages, episode['episode_state'] == PlayState.WATCHING) }}
+    {{ episode_tr(episode['show_name'], episode, languages, episode['episode_state'] == PlayState.WATCHING) }}
     {% endfor %}
 </table>
 {% endif %}

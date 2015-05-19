@@ -40,22 +40,16 @@ class ShowHandler(tornado.websocket.WebSocketHandler):
         msg = parse_message(message)
         if msg.message_type == MessageType.LOAD_SHOW:
 
-            subquery = (Episode.select(
-                Episode.season.alias('season_id'),
-                Episode.episode_state.alias('state'),
-                fn.Count(fn.distinct(Episode.episode_state)).alias('state_count'))
-                        .join(Season)
-                        .where(Season.show == msg.show_id)
-                        .group_by(Season.id)).alias('sq')
+            season_infos = (Season.select(Season.id, Season.season_number)
+                            .where(Season.show == msg.show_id)
+                            .tuples())
 
-            seasons = (Season.select(Season, Episode,
-                                     subquery.c.state.alias('state'),
-                                     subquery.c.state_count.alias('state_count'))
-                       .join(Episode)
-                       .join(subquery, on=(Season.id == subquery.c.season_id))
-                       .where(Season.show == msg.show_id)
-                       .order_by(Season.season_number.desc(), Episode.episode_number.asc())
-                       .aggregate_rows())
+            seasons = list()
+            if season_infos.exists():
+                for season_id, season_number in season_infos:
+                    seasons.append((season_number, (Episode.select()
+                                                    .where(Episode.season == season_id)
+                                                    .dicts())))
 
             msg.data = self.renderer.render_string("episodes.html", show_name=msg.show_name, seasons=seasons,
                                                    languages={'eng', 'fra'}, PlayState=PlayState)
