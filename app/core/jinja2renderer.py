@@ -1,23 +1,25 @@
 __author__ = 'roland'
 
 from jinja2 import Environment, FileSystemLoader, TemplateNotFound
+from core.customfilters import *
 
 
 class Jinja2Renderer:
     def __init__(self, settings):
         self.settings = settings
 
-    def render_template(self, template_name, **kwargs):
         template_dirs = []
         if self.settings.get('template_path', ''):
-            template_dirs.append(
-                self.settings["template_path"]
-            )
+            template_dirs.append(self.settings["template_path"])
+        self.env = env = Environment(loader=FileSystemLoader(template_dirs))
 
-        env = Environment(loader=FileSystemLoader(template_dirs))
+        # custom filters
+        self.env.filters['episode_progress'] = episode_progress
+
+    def render_template(self, template_name, **kwargs):
 
         try:
-            template = env.get_template(template_name)
+            template = self.env.get_template(template_name)
         except TemplateNotFound:
             raise TemplateNotFound(template_name)
         content = template.render(kwargs)

@@ -3,7 +3,7 @@ __author__ = 'roland'
 import tornado.web
 from peewee import fn
 from model import Show, Season, Episode, PlayState
-from handlers import Jinja2Renderer
+from core import Jinja2Renderer
 
 
 class MainHandler(tornado.web.RequestHandler):

@@ -1,4 +1,4 @@
-{% macro episode_tr(show_name, episode, languages, is_watching) -%}
+{% macro episode_tr(show_name, episode, languages) -%}
 <tr>
     <td>
         {% if show_name is not none %}
@@ -26,11 +26,8 @@
         {% endfor %}
     </td>
     <td>
-        {% if is_watching %}
-        {% set episode_progress = episode['current_time'] / episode['total_time'] * 100.0 %}
-        {% else %}
-        {% set episode_progress = 100.0 %}
-        {% endif %}
+        {% set episode_progress = episode['current_time']|episode_progress(episode['total_time'],
+        episode['episode_state']) %}
         <a href="#" onclick="gustaf.toggleEpisodeState($(this), {{ episode['id'] }});return false;">
             <div class="progress">
                 <div id="progress_episode_{{ episode['id'] }}"
