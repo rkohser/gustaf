@@ -12,13 +12,11 @@ class MainHandler(tornado.web.RequestHandler):
         self.renderer = Jinja2Renderer(self.settings)
 
     def get(self):
-        shows = (Show.select(Show.id, Show.name, fn.Count(fn.Distinct(Episode.episode_state)).alias('state_count'),
-                             Episode.episode_state.alias('state'))
+        shows = (Show.select(Show, Season, Episode)
                  .join(Season)
                  .join(Episode)
                  .order_by(Show.name)
-                 .group_by(Show.id)
-                 .dicts())
+                 .aggregate_rows())
 
         # Build dashboard info
         started_episodes = (Episode.select(Show.name.alias('show_name'),
@@ -43,6 +41,5 @@ class MainHandler(tornado.web.RequestHandler):
                          .dicts())
 
         self.write(self.renderer.render_string("shows.html", shows=shows, languages={'eng', 'fra'},
-                                               started_episodes=started_episodes,
                                                next_episodes=next_episodes,
                                                PlayState=PlayState))

@@ -15,6 +15,10 @@ class Jinja2Renderer:
 
         # custom filters
         self.env.filters['episode_progress'] = episode_progress
+        self.env.filters['show_state'] = show_state
+        self.env.filters['season_state'] = season_state
+        self.env.filters['started_episodes'] = started_episodes
+        self.env.filters['next_episodes'] = next_episodes
 
     def render_template(self, template_name, **kwargs):
 

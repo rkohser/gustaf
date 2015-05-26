@@ -39,16 +39,11 @@ class ShowHandler(tornado.websocket.WebSocketHandler):
         msg = parse_message(message)
         if msg.message_type == MessageType.LOAD_SHOW:
 
-            season_infos = (Season.select(Season.id, Season.season_number)
-                            .where(Season.show == msg.show_id)
-                            .tuples())
-
-            seasons = list()
-            if season_infos.exists():
-                for season_id, season_number in season_infos:
-                    seasons.append((season_number, (Episode.select()
-                                                    .where(Episode.season == season_id)
-                                                    .dicts())))
+            seasons = (Season.select(Season, Episode)
+                       .join(Episode)
+                       .where(Season.show == msg.show_id)
+                       .order_by(Season.season_number)
+                       .aggregate_rows())
 
             msg.data = self.renderer.render_string("episodes.html", show_name=msg.show_name, seasons=seasons,
                                                    languages={'eng', 'fra'})

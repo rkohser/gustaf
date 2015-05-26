@@ -1,11 +1,11 @@
 {% from "episode.html" import episode_tr %}
 
 <h1>{{ show_name|title }}</h1>
-{% for season_number, episodes in seasons %}
-<h1>Season {{ season_number }}</h1>
+{% for season in seasons %}
+<h1>Season {{ season.season_number }}</h1>
 <table class="table table-hover">
-    {% for episode in episodes %}
-    {{ episode_tr(None, episode, languages) }}
+    {% for episode in season.episodes %}
+    {{ episode_tr(None, season_number, episode, languages) }}
     {% endfor %}
 </table>
 </table>

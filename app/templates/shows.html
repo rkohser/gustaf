@@ -4,10 +4,10 @@
 {% block sidebar %}
 {% if shows %}
 {% for show in shows %}
-<button id="state_show_{{show['id']}}" type="button"
-        class="btn btn-{% if show['state_count'] == 1 %}{{show['state'].label}}{% else %}warning{% endif %}"
-        onclick="gustaf.getEpisodesForShow({{show['id']}}, '{{show['name']}}')">
-    {{ show['name'].title() }}
+<button id="state_show_{{show.id}}" type="button"
+        class="btn btn-{{(show|show_state).label}}"
+        onclick="gustaf.getEpisodesForShow({{show.id}}, '{{show.name}}')">
+{{ show['name'].title() }}
 </button>
 {% endfor %}
 {% else %}
@@ -18,20 +18,22 @@
 {% endblock %}
 
 {% block dashboard %}
-{% if started_episodes.exists() %}
+{% set started = shows|started_episodes %}
+{% if started %}
 <h1>Started watching</h1>
 <table class="table table-hover">
-    {% for episode in started_episodes %}
-    {{ episode_tr(episode['show_name'], episode, languages) }}
+    {% for show_name, season_number, episode in started %}
+    {{ episode_tr(show_name, season_number, episode, languages) }}
     {% endfor %}
+    {% endif %}
 </table>
-{% endif %}
 
-{% if next_episodes.exists() %}
+{% set next = shows|next_episodes %}
+{% if next %}
 <h1>Next episodes</h1>
 <table class="table table-hover">
-    {% for episode in next_episodes %}
-    {{ episode_tr(episode['show_name'], episode, languages) }}
+    {% for show_name, season_number, episode in next %}
+    {{ episode_tr(show_name, season_number, episode, languages) }}
     {% endfor %}
 </table>
 {% endif %}
