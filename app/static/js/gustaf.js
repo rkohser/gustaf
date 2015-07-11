@@ -1,6 +1,6 @@
 ﻿var gustaf = {};
 
-$(document).ready(function(){
+$(document).ready(function () {
 
     var spin_opts = {
         lines: 8, // The number of lines to draw
@@ -24,9 +24,14 @@ $(document).ready(function(){
     // Init page
     $('#progress').hide();
 
+    // Build WebSocket URL
+    var buildWSUrl = function (wsName) {
+        return "ws://" + window.location.host + "/" + wsName;
+    };
+
     // Init web sockets
-    gustaf.show_ws = new WebSocket("ws://localhost:8888/show");
-    gustaf.play_ws = new WebSocket("ws://localhost:8888/play");
+    gustaf.show_ws = new WebSocket(buildWSUrl("show"));
+    gustaf.play_ws = new WebSocket(buildWSUrl("play"));
 
     // Show web socket
     gustaf.show_ws.onmessage = function(evt) {
@@ -54,7 +59,7 @@ $(document).ready(function(){
             case "update_episode_progress":
                 setEpisodeProgress(msg.episode_id, msg.current_time, msg.total_time, msg.play_state);
             };
-        };       
+        };
     };
 
     // Play web socket
@@ -124,7 +129,7 @@ $(document).ready(function(){
         gustaf.show_ws.send(JSON.stringify(message));
     };
 
-    setEpisodeState = function(episode_id, stateArray, current_time, total_time, play_state) {
+    var setEpisodeState = function(episode_id, stateArray, current_time, total_time, play_state) {
 
         //full progress bar if not playing
         var progress = 100;
@@ -133,7 +138,7 @@ $(document).ready(function(){
         };
 
         var progress_elt = $("#progress_episode_" + episode_id);
-        
+
         //update progress
         progress_elt.attr("style", "width: " + progress + "%")
             .attr("aria-valuenow", progress)
@@ -154,7 +159,7 @@ $(document).ready(function(){
         };
     };
 
-    setSeasonState = function(season_id, stateArray) {
+    var setSeasonState = function(season_id, stateArray) {
         // select element with id
         $("#state_season_" + season_id)
             .removeClass()
@@ -162,14 +167,14 @@ $(document).ready(function(){
             .text(stateArray[1]);
     };
 
-    setShowState = function(show_id, stateArray) {
+    var setShowState = function(show_id, stateArray) {
         // select element with id
         $("#state_show_" + show_id)
             .removeClass()
             .addClass("btn btn-" + stateArray[2]);
     };
 
-    setSubtitleState = function(episode_id, language, result) {
+    var setSubtitleState = function(episode_id, language, result) {
         $("#sub_episode_" + episode_id + "_" + language)
             .spin(false)
             .removeClass()
