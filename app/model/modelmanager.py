@@ -7,6 +7,7 @@ from peewee import DoesNotExist
 from model import Show, Season, Episode, db, PlayState
 from core import FileFinder
 from core import get_subs
+from core import configurator
 
 
 class ModelManager:
@@ -31,7 +32,10 @@ class ModelManager:
         db_ = list()
         for episode in Episode.select():
             db_.append(episode.path)
-        finder = FileFinder(['E:\JDownloader'], db_, ("mkv", "avi", "mp4"))
+
+        searchpath = configurator.get()['settings']['search_path']
+
+        finder = FileFinder([searchpath], db_, ("mkv", "avi", "mp4"))
         for episode_info in finder.find():
             ModelManager.merge_episode(episode_info)
 

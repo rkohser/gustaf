@@ -8,10 +8,13 @@ import tornado.web
 import tornado.template
 from model import ModelManager
 from handlers import MainHandler, ShowHandler, PlayHandler
+from core import configurator
 
 
 if __name__ == '__main__':
     sys.path.insert(0, os.path.join(os.path.dirname(__file__)))
+
+    configurator.init('settings.json')
 
     ModelManager.init_model()
     ModelManager.update_model()

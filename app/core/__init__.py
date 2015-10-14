@@ -9,3 +9,4 @@ from core.handlerregistry import register_handler, get_handler
 from core.subtitlesdownloader import get_subs
 from core.jinja2renderer import Jinja2Renderer
 from core.customfilters import episode_progress
+from core.configurator import init, get
