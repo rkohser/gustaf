@@ -55,6 +55,8 @@ docs/_build/
 Include/
 Lib/
 Scripts/
+include/
+bin/
 
 #PyCharm dirs
 .idea/
