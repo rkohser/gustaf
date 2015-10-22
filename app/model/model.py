@@ -3,6 +3,7 @@ __author__ = 'roland'
 from enum import Enum, unique
 
 from peewee import *
+import datetime
 
 
 db = SqliteDatabase('gustaf.db')
@@ -86,7 +87,7 @@ class Episode(BaseModel):
     current_time = FloatField(default=0.0)
     total_time = FloatField(default=0.0)
     episode_state = PlayStateField(default=PlayState.NOT_WATCHED)
-    last_watched = DateTimeField()
+    last_watched = DateTimeField(default=datetime.datetime.utcfromtimestamp(0))
     added_time = DateTimeField()
 
 
