@@ -1,15 +1,11 @@
-__author__ = 'roland'
-
 from enum import Enum, unique
 
 from peewee import *
-import datetime
-
+# Print all queries to stderr.
+import logging
 
 db = SqliteDatabase('gustaf.db')
 
-# Print all queries to stderr.
-import logging
 
 logger = logging.getLogger('peewee')
 logger.setLevel(logging.DEBUG)
@@ -44,7 +40,7 @@ class PlayState(Enum):
             return PlayState.NOT_WATCHED
 
 
-class PlayStateField(IntegerField): 
+class PlayStateField(IntegerField):
     def db_value(self, value):
         assert isinstance(value, PlayState)
         return str(value.num)
@@ -87,7 +83,7 @@ class Episode(BaseModel):
     current_time = FloatField(default=0.0)
     total_time = FloatField(default=0.0)
     episode_state = PlayStateField(default=PlayState.NOT_WATCHED)
-    last_watched = DateTimeField(default=datetime.datetime.utcfromtimestamp(0))
+    last_watched = DateTimeField(null=True)
     added_time = DateTimeField()
 
 
