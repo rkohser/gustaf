@@ -64,3 +64,6 @@ bin/
 #db
 *.db
 
+#settings
+settings.json
+

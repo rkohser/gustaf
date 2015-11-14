@@ -1,5 +1,3 @@
-__author__ = 'roland'
-
 import sys
 
 import os
@@ -7,7 +5,7 @@ import tornado.ioloop
 import tornado.web
 import tornado.template
 from model import ModelManager
-from handlers import MainHandler, ShowHandler, PlayHandler
+from handlers import MainHandler, ShowHandler, PlayHandler, ShowListHandler
 from core import configurator
 
 
@@ -21,11 +19,13 @@ if __name__ == '__main__':
     ModelManager.update_subtitles()
 
     class Application(tornado.web.Application):
+
         def __init__(self):
             handlers = [
                 (r"/", MainHandler),
                 (r"/show", ShowHandler, {'name': 'show'}),
-                (r"/play", PlayHandler, {'name': 'play'})
+                (r"/play", PlayHandler, {'name': 'play'}),
+                (r"/shows", ShowListHandler)
             ]
 
             settings = {

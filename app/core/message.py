@@ -1,16 +1,8 @@
-__author__ = 'roland'
-
 from enum import Enum, unique
 import json
 
 from model import PlayState
-
-
-class EnumEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, Enum):
-            return obj.value
-        return json.JSONEncoder.default(self, obj)
+from core.helpers import EnumEncoder
 
 
 @unique
