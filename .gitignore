@@ -67,3 +67,4 @@ bin/
 #settings
 settings.json
 
+/nbproject

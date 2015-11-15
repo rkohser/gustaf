@@ -21,12 +21,14 @@ if __name__ == '__main__':
     class Application(tornado.web.Application):
 
         def __init__(self):
+            root = os.path.dirname(__file__)
             handlers = [
-                (r"/", MainHandler),
+                (r"/static/(.*)", tornado.web.StaticFileHandler, {"path": "static"}),
                 (r"/show", ShowHandler, {'name': 'show'}),
                 (r"/play", PlayHandler, {'name': 'play'}),
                 (r"/shows", ShowListHandler),
-                (r"/episodes/([^/]*)", EpisodeHandler)
+                (r"/episodes/([^/]*)", EpisodeHandler),
+                (r"/(.*)", tornado.web.StaticFileHandler, {"path": root, "default_filename": "index.html"})
             ]
 
             settings = {
