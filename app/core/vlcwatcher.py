@@ -3,7 +3,7 @@ import json
 import re
 from enum import Enum, unique
 from model import PlayState
-from core.helpers import EnumEncoder
+from core.helpers import ModelEncoder
 
 
 class WrongPasswordError(Exception):
@@ -65,7 +65,7 @@ class VLCStatus:
 
     def to_json(self):
         # transform into dict list
-        return json.dumps(self.__dict__, cls=EnumEncoder)
+        return json.dumps(self.__dict__, cls=ModelEncoder)
 
 
 class VLCWatcher():

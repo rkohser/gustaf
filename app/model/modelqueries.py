@@ -29,5 +29,12 @@ def query_next_episodes():
     pass
 
 
-def query_episodes_per_show_id():
-    pass
+def query_episodes_per_show_id(show_id=None):
+    episodes = (Episode.select(Episode, Season.season_number)
+                .join(Season)
+                .dicts())
+
+    if show_id:
+        episodes = episodes.where(Season.show == show_id)
+
+    return list(x for x in episodes)

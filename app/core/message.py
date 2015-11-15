@@ -2,7 +2,7 @@ from enum import Enum, unique
 import json
 
 from model import PlayState
-from core.helpers import EnumEncoder
+from core.helpers import ModelEncoder
 
 
 @unique
@@ -62,7 +62,7 @@ class Message(object):
     @staticmethod
     def to_json(msg_list):
         # transform into dict list
-        return json.dumps([msg.__dict__ for msg in msg_list], cls=EnumEncoder)
+        return json.dumps([msg.__dict__ for msg in msg_list], cls=ModelEncoder)
 
 
 def parse_message(msg):

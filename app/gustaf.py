@@ -5,7 +5,7 @@ import tornado.ioloop
 import tornado.web
 import tornado.template
 from model import ModelManager
-from handlers import MainHandler, ShowHandler, PlayHandler, ShowListHandler
+from handlers import MainHandler, ShowHandler, PlayHandler, ShowListHandler, EpisodeHandler
 from core import configurator
 
 
@@ -25,7 +25,8 @@ if __name__ == '__main__':
                 (r"/", MainHandler),
                 (r"/show", ShowHandler, {'name': 'show'}),
                 (r"/play", PlayHandler, {'name': 'play'}),
-                (r"/shows", ShowListHandler)
+                (r"/shows", ShowListHandler),
+                (r"/episodes/([^/]*)", EpisodeHandler)
             ]
 
             settings = {
