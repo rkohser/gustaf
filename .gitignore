@@ -52,11 +52,11 @@ coverage.xml
 docs/_build/
 
 #virtualenv dirs
-Include/
-Lib/
-Scripts/
-include/
-bin/
+/Include
+/Lib
+/Scripts
+/include
+bin
 
 #PyCharm dirs
 .idea/
