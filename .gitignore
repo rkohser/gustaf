@@ -68,3 +68,4 @@ bin/
 settings.json
 
 /nbproject
+/bower_components

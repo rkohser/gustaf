@@ -12,13 +12,13 @@
     <title>gustaf</title>
 
     <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="static/externals/bootstrap-3.2.0-dist/css/bootstrap.min.css">
-
-    <!-- Custom styles for this template -->
-    <link rel="stylesheet" href="static/css/dashboard.css">
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
 
     <!-- Angular JS -->
-    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+    <script src="bower_components/angular/angular.min.js"></script>
+
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="app/styles/dashboard.css">
 
 <body>
 <!-- Nav bar -->
@@ -38,13 +38,13 @@
 
 
 <div class="container-fluid">
-    <div class="row">
+    <div ng-app="gustafApp" ng-controller="gustafController" class="row">
 
         <!-- Sidebar -->
-        <aside ng-app="myApp" ng-controller="customersCtrl" class="btn-group-vertical col-lg-4 sidebar">
+        <aside class="btn-group-vertical col-lg-4 sidebar">
             <div class="btn-group">
                 <button ng-repeat="show in shows" id="state_show_{{show.id}}" type="button"
-                        class="btn btn-{{show.state[2]}}">
+                        class="btn btn-{{show.state[2]}}" ng-click="getEpisodesPerShowId(show.id)">
                     {{show.name}}
                 </button>
             </div>
@@ -54,9 +54,13 @@
         <div class="col-lg-8 col-lg-offset-4">
             <div class="row">
                 <div id="episodes" class="col-lg-12">
-                    {% block dashboard %}
-                    <h1>Select a show</h1>
-                    {% endblock %}
+                    <table class="table table-hover">
+                        <tr ng-repeat="episode in episodes">
+                            <td>
+                                <b>{{episode.episode_number}}</b>
+                            </td>
+                        </tr>
+                    </table>
                 </div>
             </div>
         </div>
@@ -64,16 +68,15 @@
 
 </div>
 
-</body>
+<script src="app/scripts/gustaf-ng.js"></script>
 
-<script src="static/js/gustaf-ng.js"></script>
+</body>
 
 <!-- Bootstrap core JavaScript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
-<script src="static/externals/jquery-2.1.1.min.js"></script>
-<script src="static/externals/spin.min.js"></script>
-<script src="static/externals/jquery.spin.js"></script>
-<script src="static/externals/bootstrap-3.2.0-dist/js/bootstrap.min.js"></script>
-<script src="static/js/gustaf.js"></script>
+<script src="bower_components/jquery/dist/jquery.min.js"></script>
+<script src="bower_components/spin/javascripts/jquery.spin.js"></script>
+<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="app/scripts/gustaf.js"></script>
 </html>
