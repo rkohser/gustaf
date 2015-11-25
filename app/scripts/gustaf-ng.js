@@ -4,18 +4,18 @@
  * and open the template in the editor.
  */
 
-var app = angular.module('gustafApp', []);
-app.controller('gustafController', function($scope, $http) {
-    $http.get("/shows").success(
-        function(response) {
-            $scope.shows = response;
-        }
-    );
-    
-    $scope.getEpisodesPerShowId = function(showId) {
-        $http.get("/episodes/" + showId).success(
+angular.module('gustafApp', ['gustafFilters'])
+    .controller('gustafController', function($scope, $http) {
+        $http.get("/shows").success(
             function(response) {
-                $scope.episodes = response;
-            });
-    };
-});
+                $scope.shows = response;
+            }
+        );
+
+        $scope.getEpisodesPerShowId = function(showId) {
+            $http.get("/episodes/" + showId).success(
+                function(response) {
+                    $scope.episodes = response;
+                });
+        };
+    });

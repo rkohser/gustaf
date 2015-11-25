@@ -41,7 +41,7 @@
     <div ng-app="gustafApp" ng-controller="gustafController" class="row">
 
         <!-- Sidebar -->
-        <aside class="btn-group-vertical col-lg-4 sidebar">
+        <aside class="btn-group-vertical col-lg-4 col-md-4 col-sm-4 sidebar">
             <div class="btn-group">
                 <button ng-repeat="show in shows" id="state_show_{{show.id}}" type="button"
                         class="btn btn-{{show.state[2]}}" ng-click="getEpisodesPerShowId(show.id)">
@@ -51,13 +51,28 @@
         </aside>
 
         <!-- Main section-->
-        <div class="col-lg-8 col-lg-offset-4">
+        <div class="col-lg-8 col-md-8 col-sm-8 col-lg-offset-4 col-md-offset-4 col-offset-sm-4">
             <div class="row">
                 <div id="episodes" class="col-lg-12">
                     <table class="table table-hover">
                         <tr ng-repeat="episode in episodes">
                             <td>
                                 <b>{{episode.episode_number}}</b>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-primary">
+                                    <span class="glyphicon glyphicon-play"></span>
+                                </button>
+                            </td>
+                            <td>
+                                <a>
+                                    <div class="progress">
+                                        <div id="progress_episode_{{episode.id}}"
+                                             class="progress-bar progress-bar-{{episode.episode_state[2]}}"
+                                             role="progressbar" style="width: {{episode|progress}}%">
+                                        </div>
+                                    </div>
+                                </a>
                             </td>
                         </tr>
                     </table>
@@ -69,6 +84,7 @@
 </div>
 
 <script src="app/scripts/gustaf-ng.js"></script>
+<script src="app/scripts/gustaf-filters.js"></script>
 
 </body>
 
