@@ -5,7 +5,7 @@ import time
 from core.vlcwatcher import VLCWatcher
 
 
-class VLCProcess():
+class VLCProcess:
     def __init__(self):
         super().__init__()
 
@@ -70,5 +70,5 @@ class VLCProcess():
             time.sleep(5)
             try:
                 self.progress_callback(self.watcher.watch())
-            except Exception as e:
+            except:
                 pass

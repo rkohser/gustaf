@@ -9,7 +9,7 @@ class Jinja2Renderer:
         template_dirs = []
         if self.settings.get('template_path', ''):
             template_dirs.append(self.settings["template_path"])
-        self.env = env = Environment(loader=FileSystemLoader(template_dirs))
+        self.env = Environment(loader=FileSystemLoader(template_dirs))
 
         # custom filters
         self.env.filters['episode_progress'] = episode_progress

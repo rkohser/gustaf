@@ -68,7 +68,7 @@ class VLCStatus:
         return json.dumps(self.__dict__, cls=ModelEncoder)
 
 
-class VLCWatcher():
+class VLCWatcher:
     def __init__(self, server="localhost", port=4212, password="admin", timeout=5):
         self.server = server
         self.port = port
@@ -121,12 +121,12 @@ class VLCWatcher():
         status = None
         try:
             status = VLCStatus(self.status_re.search(status_str).group("state"))
-        except Exception as e:
+        except:
             pass
         else:
             if status.state == VLCState.PLAYING or status.state == VLCState.PAUSED:
                 try:
                     status.file = self.current_file_re.search(status_str).group("file")
-                except Exception as e:
+                except:
                     pass
         return status
