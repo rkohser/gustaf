@@ -56,3 +56,12 @@ body {
     width: 100%;
     color: white;
  }
+ 
+ /* Fix modal embed tag issues */
+.modal.in .modal-dialog {
+    -moz-transform: none;
+}
+
+.modal.fade .modal-dialog { 
+    -moz-transform: none; 
+}

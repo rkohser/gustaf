@@ -27,7 +27,9 @@ if __name__ == '__main__':
                 (r"/play", PlayHandler, {'name': 'play'}),
                 (r"/shows", ShowListHandler),
                 (r"/episodes/([^/]*)", EpisodeHandler),
-                (r"/(.*)", tornado.web.StaticFileHandler, {"path": root, "default_filename": "app/index.html"})
+                (r"/content/(.*)", tornado.web.StaticFileHandler,
+                 {"path": configurator.get()['settings']['search_path']}),
+                (r"/(.*)", tornado.web.StaticFileHandler, {"path": root, "default_filename": "app/index.html"}),
             ]
 
             settings = {
