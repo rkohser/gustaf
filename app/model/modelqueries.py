@@ -1,4 +1,5 @@
 from model import Show, Season, Episode, PlayState
+from core import configurator
 from peewee import fn
 
 
@@ -30,8 +31,13 @@ def query_next_episodes():
 
 
 def query_episodes_per_show_id(show_id=None):
-    episodes = (Episode.select(Episode, Season.season_number)
+    episodes = (Episode.select(Episode,
+                               Season.season_number,
+                               Show.name,
+                               fn.REPLACE(fn.REPLACE(Episode.path, configurator.get()['settings']['search_path'], ''),
+                                          '\\', '/').alias('url'))
                 .join(Season)
+                .join(Show)
                 .dicts())
 
     if show_id:
