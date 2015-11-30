@@ -1,7 +1,5 @@
 import datetime
 
-__author__ = 'roland'
-
 import tornado.ioloop
 from peewee import fn
 

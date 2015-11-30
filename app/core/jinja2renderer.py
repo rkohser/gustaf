@@ -1,5 +1,3 @@
-__author__ = 'roland'
-
 from jinja2 import Environment, FileSystemLoader, TemplateNotFound
 from core.customfilters import *
 
@@ -33,6 +31,8 @@ class Jinja2Renderer:
         """
         This is for making some extra context variables available to
         the template
+        :param kwargs:
+        :param template_name:
         """
         kwargs.update({
             'settings': self.settings,

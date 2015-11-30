@@ -1,5 +1,3 @@
-__author__ = 'roland'
-
 import os
 import guessit
 
