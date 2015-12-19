@@ -1,7 +1,5 @@
 from core.playstatemanager import PlayStateManager
 
-__author__ = 'roland'
-
 import tornado.websocket
 
 from model import Season, Episode

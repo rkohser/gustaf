@@ -1,5 +1,3 @@
-__author__ = 'roland'
-
 import subliminal
 import io
 

@@ -1,5 +1,3 @@
-__author__ = 'roland'
-
 import sys
 
 import os
@@ -7,7 +5,7 @@ import tornado.ioloop
 import tornado.web
 import tornado.template
 from model import ModelManager
-from handlers import MainHandler, ShowHandler, PlayHandler
+from handlers import MainHandler, ShowHandler, PlayHandler, ShowListHandler, EpisodeHandler
 from core import configurator
 
 
@@ -21,17 +19,22 @@ if __name__ == '__main__':
     ModelManager.update_subtitles()
 
     class Application(tornado.web.Application):
+
         def __init__(self):
+            root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
             handlers = [
-                (r"/", MainHandler),
                 (r"/show", ShowHandler, {'name': 'show'}),
-                (r"/play", PlayHandler, {'name': 'play'})
+                (r"/play", PlayHandler, {'name': 'play'}),
+                (r"/shows", ShowListHandler),
+                (r"/episodes/([^/]*)", EpisodeHandler),
+                (r"/content/(.*)", tornado.web.StaticFileHandler,
+                 {"path": configurator.get()['settings']['search_path']}),
+                (r"/(.*)", tornado.web.StaticFileHandler, {"path": root, "default_filename": "app/index.html"}),
             ]
 
             settings = {
                 'debug': True,
                 'template_path': os.path.join(os.path.dirname(__file__), 'templates'),
-                'static_path': os.path.join(os.path.dirname(__file__), 'static')
             }
             tornado.web.Application.__init__(self, handlers, **settings)
 

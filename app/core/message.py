@@ -1,16 +1,8 @@
-__author__ = 'roland'
-
 from enum import Enum, unique
 import json
 
 from model import PlayState
-
-
-class EnumEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, Enum):
-            return obj.value
-        return json.JSONEncoder.default(self, obj)
+from core.helpers import ModelEncoder
 
 
 @unique
@@ -70,7 +62,7 @@ class Message(object):
     @staticmethod
     def to_json(msg_list):
         # transform into dict list
-        return json.dumps([msg.__dict__ for msg in msg_list], cls=EnumEncoder)
+        return json.dumps([msg.__dict__ for msg in msg_list], cls=ModelEncoder)
 
 
 def parse_message(msg):

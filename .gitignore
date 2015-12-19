@@ -52,11 +52,11 @@ coverage.xml
 docs/_build/
 
 #virtualenv dirs
-Include/
-Lib/
-Scripts/
-include/
-bin/
+/Include
+/Lib
+/Scripts
+/include
+bin
 
 #PyCharm dirs
 .idea/
@@ -64,3 +64,8 @@ bin/
 #db
 *.db
 
+#settings
+settings.json
+
+/nbproject
+/bower_components

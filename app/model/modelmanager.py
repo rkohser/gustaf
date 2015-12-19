@@ -1,5 +1,3 @@
-__author__ = 'roland'
-
 import re
 import datetime
 from peewee import DoesNotExist

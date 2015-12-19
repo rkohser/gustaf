@@ -1,5 +1,3 @@
-__author__ = 'roland'
-
 import json
 
 __settings__ = None

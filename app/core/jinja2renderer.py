@@ -1,5 +1,3 @@
-__author__ = 'roland'
-
 from jinja2 import Environment, FileSystemLoader, TemplateNotFound
 from core.customfilters import *
 
@@ -11,7 +9,7 @@ class Jinja2Renderer:
         template_dirs = []
         if self.settings.get('template_path', ''):
             template_dirs.append(self.settings["template_path"])
-        self.env = env = Environment(loader=FileSystemLoader(template_dirs))
+        self.env = Environment(loader=FileSystemLoader(template_dirs))
 
         # custom filters
         self.env.filters['episode_progress'] = episode_progress
@@ -33,6 +31,8 @@ class Jinja2Renderer:
         """
         This is for making some extra context variables available to
         the template
+        :param kwargs:
+        :param template_name:
         """
         kwargs.update({
             'settings': self.settings,

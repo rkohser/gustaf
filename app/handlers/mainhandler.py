@@ -1,5 +1,3 @@
-__author__ = 'roland'
-
 import tornado.web
 from peewee import fn
 from model import Show, Season, Episode, PlayState

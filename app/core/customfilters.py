@@ -1,5 +1,3 @@
-__author__ = 'roland'
-
 from model import PlayState, Episode
 import sys
 
