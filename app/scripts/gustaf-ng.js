@@ -31,7 +31,7 @@ angular.module('gustafApp', ['gustafFilters'])
                 $('.modal').modal('show');
             } 
         };
-    })
+    }) 
 
     .directive('gustafPlayer', function () {
         return {
@@ -42,13 +42,38 @@ angular.module('gustafApp', ['gustafFilters'])
             link: function(scope, element, attributes) {
                 
                 $(element).on('shown.bs.modal', function(e){
-                    scope.vlc = document.getElementById('vlc');
-                    if (scope.vlc)
-                    {
-                        var id = scope.vlc.playlist.add("content" + escape(scope.current.url));
-                        scope.vlc.playlist.playItem(id);
-                    }
+                    
+                    var name = scope.current.name + 
+                            ' S' + pad(scope.current.season_number, 2) + 
+                            'E' + pad(scope.current.episode_number, 2);
+                    
+                    $('#episode_name').text(name);
+                    
+                    var url = "http://" + window.location.host + "/content" + escape(scope.current.url);
+                    
+                    // create player
+                    wjs("#player_wrapper").addPlayer({ id: "webchimera", theme: "sleek", autoplay: 1, buffer: 0, debug:true });
+
+                    // add video url with an external subtitle
+                    myplaylist = [];
+
+                    myplaylist.push({
+                            url: url,
+                            subtitles: {
+                                    "English": url.replace(".mkv", ".en.srt")
+                            }
+                    });
+
+                    // add the playlist to the player
+                    wjs("#webchimera").addPlaylist(myplaylist);
                 });
             }
         };
-    });
+    },
+    
+    pad = function (str, max) {
+        str = str.toString();
+        return str.length < max ? pad("0" + str, max) : str;
+    }
+        
+    );
