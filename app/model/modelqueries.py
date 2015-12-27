@@ -44,3 +44,20 @@ def query_episodes_per_show_id(show_id=None):
         episodes = episodes.where(Season.show == show_id)
 
     return list(x for x in episodes)
+
+
+def update_episode_status(data):
+    episode = Episode.get(Episode.id == data['id'])
+
+    episode.episode_state = PlayState.from_num(data['episode_state'][0])
+
+    if "current_time" in data:
+        episode.current_time = data['current_time']
+
+    if "total_time" in data:
+        episode.total_time = data['total_time']
+
+    if "last_watched" in data:
+        episode.last_watched = data['last_watched']
+
+    episode.save()

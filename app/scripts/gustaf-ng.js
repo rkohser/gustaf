@@ -18,6 +18,30 @@ angular.module('gustafApp', ['gustafFilters'])
                     $scope.episodes = response;
                 });
         };
+        
+        var NOT_WATCHED = [1, "Not watched", "danger"];
+        var WATCHING = [2, "Watching", "warning"];
+        var WATCHED = [3, "Watched", "success"];
+        
+        $scope.toggleState = function(episode_id, episode_state) {
+            var current = $filter('filter')($scope.episodes, {id: episode_id}, true)[0];
+            if (episode_state[0] === 2 || episode_state[0] === 1) {
+                // Watching or Not Watched -> Watched
+                current.episode_state = WATCHED;
+            } else {
+                // Watched -> Not Watched
+                current.episode_state = NOT_WATCHED;
+            }
+            
+            var data = {};
+            data.id = episode_id;
+            data.episode_state = current.episode_state;
+            $scope.updateState(data);
+        };
+        
+        $scope.updateState = function(data){
+            $http.put("/update", data);
+        };
 
         // Player
         $scope.showModal = false;
