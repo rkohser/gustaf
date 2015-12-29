@@ -2,7 +2,10 @@ import subliminal
 import io
 
 from babelfish import Language
-from subliminal.subtitle import get_subtitle_path
+
+def get_subtitle_path(video_path, video_language):
+    video_extension = video_path.rsplit(".", 1)[0];
+    return video_path.replace(video_extension, video_language.alpha3 + ".srt")
 
 
 def save_subtitle(video, video_subtitle, encoding=None):
@@ -37,4 +40,3 @@ def get_subs(episode_path, language_codes):
                         result.add(sub.language.alpha3)
 
     return result
-
