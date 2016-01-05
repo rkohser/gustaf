@@ -33,10 +33,10 @@ angular.module('gustafApp', ['gustafFilters'])
                 current.episode_state = NOT_WATCHED;
             }
             
-            var data = {};
-            data.id = episode_id;
-            data.episode_state = current.episode_state;
-            $scope.updateState(data);
+            $scope.updateState({
+                id: episode_id,
+                episode_state: current.episode_state
+            });
         };
         
         $scope.updateState = function(data){
@@ -64,7 +64,18 @@ angular.module('gustafApp', ['gustafFilters'])
             controller: function($scope, $element){
             },
             link: function(scope, element, attributes) {
-
+                    
+                // create player
+                wjs("#player_wrapper").addPlayer({
+                    id: "webchimera",
+                    theme: "sleek",
+                    autoplay: 1,
+                    buffer: 0,
+                    debug:true
+                });
+                
+                scope.wjs = wjs("#webchimera");
+                    
                 $(element).on('shown.bs.modal', function(e){
 
                     var name = scope.current.name +
@@ -80,15 +91,6 @@ angular.module('gustafApp', ['gustafFilters'])
                        subtitles[lang] = url.replace(".mkv", "." + lang + ".srt"); 
                     });
 
-                    // create player
-                    wjs("#player_wrapper").addPlayer({
-                        id: "webchimera",
-                        theme: "sleek",
-                        autoplay: 1,
-                        buffer: 0,
-                        debug:true
-                    });
-
                     // add video url with an external subtitle
                     myplaylist = [];
                     myplaylist.push({
@@ -97,7 +99,18 @@ angular.module('gustafApp', ['gustafFilters'])
                     });
 
                     // add the playlist to the player
-                    wjs("#webchimera").addPlaylist(myplaylist);
+                    scope.wjs.addPlaylist(myplaylist);
+                    
+                    // create player
+                    scope.wjs.startPlayer();
+                });
+                
+                $(element).on('hide.bs.modal', function(e){
+                    
+                    scope.wjs.stopPlayer();
+                    scope.wjs.clearPlaylist();
+                    
+                    scope.showModal = !scope.showModal;
                 });
             }
         };
