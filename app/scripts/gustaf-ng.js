@@ -23,6 +23,8 @@ angular.module('gustafApp', ['gustafFilters'])
         var WATCHING = [2, "Watching", "warning"];
         var WATCHED = [3, "Watched", "success"];
         
+        var TWO_MINUTES = 120; 
+        
         $scope.toggleState = function(episode_id, episode_state) {
             var current = $filter('filter')($scope.episodes, {id: episode_id}, true)[0];
             if (episode_state[0] === 2 || episode_state[0] === 1) {
@@ -36,6 +38,25 @@ angular.module('gustafApp', ['gustafFilters'])
             $scope.updateState({
                 id: episode_id,
                 episode_state: current.episode_state
+            });
+        };
+        
+        $scope.updateProgress = function(episode_id, current_time_s, total_time_s) {
+            
+            var new_episode_state;
+            if(current_time_s < TWO_MINUTES) {
+                new_episode_state = NOT_WATCHED;
+            } else if((total_time_s - current_time_s) < TWO_MINUTES) {
+                new_episode_state = WATCHED;                
+            } else {
+                new_episode_state = WATCHING;
+            }
+            
+            $scope.updateState({
+                id: episode_id,
+                episode_state: new_episode_state,
+                current_time: current_time_s,
+                total_time: total_time_s
             });
         };
         
@@ -63,7 +84,7 @@ angular.module('gustafApp', ['gustafFilters'])
             restrict: 'E',
             controller: function($scope, $element){
             },
-            link: function(scope, element, attributes) {
+            link: function($scope, element, attributes) {
                     
                 // create player
                 wjs("#player_wrapper").addPlayer({
@@ -74,20 +95,20 @@ angular.module('gustafApp', ['gustafFilters'])
                     debug:true
                 });
                 
-                scope.wjs = wjs("#webchimera");
+                $scope.wjs = wjs("#webchimera");
                     
                 $(element).on('shown.bs.modal', function(e){
 
-                    var name = scope.current.name +
-                            ' S' + pad(scope.current.season_number, 2) +
-                            'E' + pad(scope.current.episode_number, 2);
+                    var name = $scope.current.name +
+                            ' S' + pad($scope.current.season_number, 2) +
+                            'E' + pad($scope.current.episode_number, 2);
 
                     $('#episode_name').text(name);
 
-                    var url = "http://" + window.location.host + "/content" + escape(scope.current.url);
+                    var url = "http://" + window.location.host + "/content" + escape($scope.current.url);
                     
                     var subtitles = {};
-                    angular.forEach(scope.current.subtitles, function(lang){
+                    angular.forEach($scope.current.subtitles, function(lang){
                        subtitles[lang] = url.replace(".mkv", "." + lang + ".srt"); 
                     });
 
@@ -99,18 +120,20 @@ angular.module('gustafApp', ['gustafFilters'])
                     });
 
                     // add the playlist to the player
-                    scope.wjs.addPlaylist(myplaylist);
+                    $scope.wjs.addPlaylist(myplaylist);
                     
                     // create player
-                    scope.wjs.startPlayer();
+                    $scope.wjs.startPlayer();
                 });
                 
                 $(element).on('hide.bs.modal', function(e){
                     
-                    scope.wjs.stopPlayer();
-                    scope.wjs.clearPlaylist();
+                    $scope.updateProgress($scope.current.id, $scope.wjs.time() / 1000.0, $scope.wjs.length() / 1000.0);
                     
-                    scope.showModal = !scope.showModal;
+                    $scope.wjs.stopPlayer();
+                    $scope.wjs.clearPlaylist();
+                    
+                    $scope.showModal = !$scope.showModal;
                 });
             }
         };

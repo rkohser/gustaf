@@ -1,3 +1,5 @@
+import datetime
+
 from model import Show, Season, Episode, PlayState
 from core import configurator
 from peewee import fn
@@ -56,8 +58,6 @@ def update_episode_status(data):
 
     if "total_time" in data:
         episode.total_time = data['total_time']
-
-    if "last_watched" in data:
-        episode.last_watched = data['last_watched']
+        episode.last_watched = datetime.datetime.now()
 
     episode.save()
