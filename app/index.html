@@ -61,12 +61,12 @@
                                 <b>{{episode.episode_number}}</b>
                             </td>
                             <td>
-                                <button type="button" class="btn btn-primary" ng-click="toggleModal(episode.id)">
+                                <button type="button" class="btn btn-primary" ng-click="toggleModal(episode)">
                                     <span class="glyphicon glyphicon-play"></span>
                                 </button>
                             </td>
                             <td>
-                                <a href="" ng-click="toggleState(episode.id, episode.episode_state)">
+                                <a href="" ng-click="toggleState(episode)">
                                     <div class="progress">
                                         <div id="progress_episode_{{episode.id}}"
                                              class="progress-bar progress-bar-{{episode.episode_state[2]}}"

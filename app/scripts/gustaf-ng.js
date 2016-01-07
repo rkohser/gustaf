@@ -25,19 +25,18 @@ angular.module('gustafApp', ['gustafFilters'])
         
         var TWO_MINUTES = 120; 
         
-        $scope.toggleState = function(episode_id, episode_state) {
-            var current = $filter('filter')($scope.episodes, {id: episode_id}, true)[0];
-            if (episode_state[0] === 2 || episode_state[0] === 1) {
+        $scope.toggleState = function(episode) {
+            if (episode.episode_state[0] === $scope.WATCHING[0] || episode.episode_state[0] === $scope.NOT_WATCHED[0]) {
                 // Watching or Not Watched -> Watched
-                current.episode_state = $scope.WATCHED;
+                episode.episode_state = $scope.WATCHED;
             } else {
                 // Watched -> Not Watched
-                current.episode_state = $scope.NOT_WATCHED;
+                episode.episode_state = $scope.NOT_WATCHED;
             }
             
             $scope.updateState({
-                id: episode_id,
-                episode_state: current.episode_state
+                id: episode.id,
+                episode_state: episode.episode_state
             });
         };
         
@@ -73,12 +72,12 @@ angular.module('gustafApp', ['gustafFilters'])
         // Player
         $scope.showModal = false;
         $scope.current = null;
-        $scope.toggleModal = function(episode_id){
+        $scope.toggleModal = function(episode){
 
             $scope.showModal = !$scope.showModal;
 
             if ($scope.showModal === true) {
-                $scope.current = $filter('filter')($scope.episodes, {id: episode_id}, true)[0];
+                $scope.current = episode;
                 $('.modal').modal('show');
             }
         };
