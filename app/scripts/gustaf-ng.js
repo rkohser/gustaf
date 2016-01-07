@@ -19,9 +19,9 @@ angular.module('gustafApp', ['gustafFilters'])
                 });
         };
         
-        var NOT_WATCHED = [1, "Not watched", "danger"];
-        var WATCHING = [2, "Watching", "warning"];
-        var WATCHED = [3, "Watched", "success"];
+        $scope.NOT_WATCHED = [1, "Not watched", "danger"];
+        $scope.WATCHING = [2, "Watching", "warning"];
+        $scope.WATCHED = [3, "Watched", "success"];
         
         var TWO_MINUTES = 120; 
         
@@ -29,10 +29,10 @@ angular.module('gustafApp', ['gustafFilters'])
             var current = $filter('filter')($scope.episodes, {id: episode_id}, true)[0];
             if (episode_state[0] === 2 || episode_state[0] === 1) {
                 // Watching or Not Watched -> Watched
-                current.episode_state = WATCHED;
+                current.episode_state = $scope.WATCHED;
             } else {
                 // Watched -> Not Watched
-                current.episode_state = NOT_WATCHED;
+                current.episode_state = $scope.NOT_WATCHED;
             }
             
             $scope.updateState({
@@ -41,21 +41,27 @@ angular.module('gustafApp', ['gustafFilters'])
             });
         };
         
-        $scope.updateProgress = function(episode_id, current_time_s, total_time_s) {
+        $scope.updateProgress = function(episode, current_time_s, total_time_s) {
             
             var new_episode_state;
+            var new_current_time = 0;
             if(current_time_s < TWO_MINUTES) {
-                new_episode_state = NOT_WATCHED;
+                new_episode_state = $scope.NOT_WATCHED;
             } else if((total_time_s - current_time_s) < TWO_MINUTES) {
-                new_episode_state = WATCHED;                
+                new_episode_state = $scope.WATCHED;                
             } else {
-                new_episode_state = WATCHING;
+                new_episode_state = $scope.WATCHING;
+                new_current_time = current_time_s;
             }
             
+            episode.current_time = new_current_time;
+            episode.total_time = total_time_s;
+            episode.episode_state = new_episode_state;
+            
             $scope.updateState({
-                id: episode_id,
+                id: episode.id,
                 episode_state: new_episode_state,
-                current_time: current_time_s,
+                current_time: new_current_time,
                 total_time: total_time_s
             });
         };
@@ -90,7 +96,7 @@ angular.module('gustafApp', ['gustafFilters'])
                 wjs("#player_wrapper").addPlayer({
                     id: "webchimera",
                     theme: "sleek",
-                    autoplay: 1,
+                    autoplay: 0,
                     buffer: 0,
                     debug:true
                 });
@@ -122,13 +128,19 @@ angular.module('gustafApp', ['gustafFilters'])
                     // add the playlist to the player
                     $scope.wjs.addPlaylist(myplaylist);
                     
-                    // create player
+                    // start watching
                     $scope.wjs.startPlayer();
+                    
+                    // go to current time
+                    if($scope.current.episode_state[0] === $scope.WATCHING[0]) {
+                        $scope.wjs.time($scope.current.current_time * 1000);
+                    }
+                    
                 });
                 
                 $(element).on('hide.bs.modal', function(e){
                     
-                    $scope.updateProgress($scope.current.id, $scope.wjs.time() / 1000.0, $scope.wjs.length() / 1000.0);
+                    $scope.updateProgress($scope.current, $scope.wjs.time() / 1000.0, $scope.wjs.length() / 1000.0);
                     
                     $scope.wjs.stopPlayer();
                     $scope.wjs.clearPlaylist();

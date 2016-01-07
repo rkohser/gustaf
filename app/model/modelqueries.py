@@ -55,6 +55,8 @@ def update_episode_status(data):
 
     if "current_time" in data:
         episode.current_time = data['current_time']
+    else:
+        episode.current_time = 0
 
     if "total_time" in data:
         episode.total_time = data['total_time']
