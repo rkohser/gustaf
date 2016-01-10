@@ -65,7 +65,7 @@ bin
 *.db
 
 #settings
-settings.json
+/app/settings.json
 
 /nbproject
 /bower_components
