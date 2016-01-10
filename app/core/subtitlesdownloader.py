@@ -3,8 +3,9 @@ import io
 
 from babelfish import Language
 
+
 def get_subtitle_path(video_path, video_language):
-    video_extension = video_path.rsplit(".", 1)[0];
+    video_extension = video_path.rsplit(".", 1)[-1]
     return video_path.replace(video_extension, video_language.alpha3 + ".srt")
 
 
