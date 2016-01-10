@@ -35,7 +35,8 @@ def query_next_episodes():
 def query_episodes_per_show_id(show_id=None):
     episodes = (Episode.select(Episode,
                                Season.season_number,
-                               Show.name,
+                               Show.name.alias('show_name'),
+                               Show.id.alias('show_id'),
                                fn.REPLACE(fn.REPLACE(Episode.path, configurator.get()['settings']['search_path'], ''),
                                           '\\', '/').alias('url'))
                 .join(Season)

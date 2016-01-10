@@ -6,11 +6,14 @@
 
 angular.module('gustafApp', ['gustafFilters'])
     .controller('gustafController', function($scope, $http, $filter) {
-        $http.get("/shows").success(
-            function(response) {
-                $scope.shows = response;
-            }
-        );
+
+        $scope.refreshShows = function(){
+            $http.get("/shows").success(
+                function(response) {
+                    $scope.shows = response;
+                }
+            );
+        };
 
         $scope.getEpisodesPerShowId = function(showId) {
             $http.get("/episodes/" + showId).success(
@@ -67,6 +70,8 @@ angular.module('gustafApp', ['gustafFilters'])
         
         $scope.updateState = function(data){
             $http.put("/update", data);
+
+            $scope.refreshShows();
         };
 
         // Player
@@ -81,6 +86,9 @@ angular.module('gustafApp', ['gustafFilters'])
                 $('.modal').modal('show');
             }
         };
+
+        // first load the shows
+        $scope.refreshShows();
     })
 
     .directive('gustafPlayer', function () {
