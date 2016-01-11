@@ -112,7 +112,7 @@ angular.module('gustafApp', ['gustafFilters'])
                     
                 $(element).on('shown.bs.modal', function(e){
 
-                    var name = $scope.current.name +
+                    var name = $scope.current.show_name +
                             ' S' + pad($scope.current.season_number, 2) +
                             'E' + pad($scope.current.episode_number, 2);
 
@@ -126,7 +126,7 @@ angular.module('gustafApp', ['gustafFilters'])
                     });
 
                     // add video url with an external subtitle
-                    myplaylist = [];
+                    var myplaylist = [];
                     myplaylist.push({
                             url: url,
                             subtitles: subtitles
