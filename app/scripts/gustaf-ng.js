@@ -7,6 +7,8 @@
 angular.module('gustafApp', ['gustafFilters'])
     .controller('gustafController', function($scope, $http, $filter) {
 
+        $scope.currentShow = null;
+
         $scope.refreshShows = function(){
             $http.get("/shows").success(
                 function(response) {
@@ -15,8 +17,11 @@ angular.module('gustafApp', ['gustafFilters'])
             );
         };
 
-        $scope.getEpisodesPerShowId = function(showId) {
-            $http.get("/episodes/" + showId).success(
+        $scope.getEpisodes = function (show) {
+
+            $scope.currentShow = show;
+
+            $http.get("/episodes/" + show.id).success(
                 function(response) {
                     $scope.episodes = response;
                 });
@@ -112,12 +117,6 @@ angular.module('gustafApp', ['gustafFilters'])
                     
                 $(element).on('shown.bs.modal', function(e){
 
-                    var name = $scope.current.show_name +
-                            ' S' + pad($scope.current.season_number, 2) +
-                            'E' + pad($scope.current.episode_number, 2);
-
-                    $('#episode_name').text(name);
-
                     var url = "http://" + window.location.host + "/content" + escape($scope.current.url);
                     
                     var subtitles = {};
@@ -156,11 +155,6 @@ angular.module('gustafApp', ['gustafFilters'])
                 });
             }
         };
-    },
-
-    pad = function (str, max) {
-        str = str.toString();
-        return str.length < max ? pad("0" + str, max) : str;
     }
 
     );

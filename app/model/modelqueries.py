@@ -24,6 +24,10 @@ def query_shows_list_with_state():
     return res
 
 
+def query_added_episodes():
+    pass
+
+
 def query_started_episodes():
     pass
 
