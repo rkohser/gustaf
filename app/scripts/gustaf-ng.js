@@ -155,6 +155,18 @@ angular.module('gustafApp', ['gustafFilters'])
                 });
             }
         };
-    }
+    })
 
-    );
+    .directive('gustafEpisodes', function () {
+        return {
+            templateUrl: 'app/templates/gustaf-episodes.html',
+            restrict: 'E',
+            scope: {
+                episodes: '=',
+                currentShow: '='
+            },
+            link: function ($scope, element, attributes) {
+
+            }
+        };
+    });
