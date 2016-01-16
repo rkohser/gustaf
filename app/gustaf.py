@@ -5,7 +5,7 @@ import tornado.ioloop
 import tornado.web
 import tornado.template
 from model import ModelManager
-from handlers import ShowHandler, PlayHandler, ShowListHandler, EpisodeHandler, UpdateStateHandler
+from handlers import ShowListHandler, EpisodeHandler, UpdateStateHandler
 from core import configurator
 
 
@@ -23,8 +23,6 @@ if __name__ == '__main__':
         def __init__(self):
             root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
             handlers = [
-                (r"/show", ShowHandler, {'name': 'show'}),
-                (r"/play", PlayHandler, {'name': 'play'}),
                 (r"/shows", ShowListHandler),
                 (r"/episodes/([^/]*)", EpisodeHandler),
                 (r"/update", UpdateStateHandler),
