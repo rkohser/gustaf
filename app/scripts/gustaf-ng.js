@@ -164,7 +164,8 @@ angular.module('gustafApp', ['gustafFilters'])
             scope: {
                 showName: '@',
                 episodes: '=',
-                play: '&'
+                play: '&',
+                toggleState: '&'
             },
             link: function ($scope, element, attributes) {
 
