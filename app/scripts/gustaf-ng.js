@@ -161,10 +161,6 @@ angular.module('gustafApp', ['gustafFilters'])
         return {
             templateUrl: 'app/templates/gustaf-episodes.html',
             restrict: 'E',
-            scope: {
-                episodes: '=',
-                currentShow: '='
-            },
             link: function ($scope, element, attributes) {
 
             }
