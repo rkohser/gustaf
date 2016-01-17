@@ -8,7 +8,7 @@
                         <b ng-if="episode">S{{episode.season_number|pad}}E{{episode.episode_number|pad}}</b>
                     </td>
                     <td>
-                        <button type="button" class="btn btn-primary" ng-click="toggleModal(episode)">
+                        <button type="button" class="btn btn-primary" ng-click="play()(episode)">
                             <span class="glyphicon glyphicon-play"></span>
                         </button>
                     </td>
