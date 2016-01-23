@@ -5,6 +5,22 @@ from core import configurator
 from peewee import fn
 
 
+def episode_request():
+    return (Episode.select(Episode,
+                           Season.season_number,
+                           Show.name.alias('show_name'),
+                           Show.id.alias('show_id'),
+                           fn.REPLACE(fn.REPLACE(Episode.path, configurator.get()['settings']['search_path'], ''),
+                                      '\\', '/').alias('url'))
+            .join(Season)
+            .join(Show)
+            .dicts())
+
+
+def to_list(datalist):
+    return list(x for x in datalist)
+
+
 def query_shows_list_with_state():
     shows = (Show.select(Show.id, Show.name, fn.Count(fn.Distinct(Episode.episode_state)).alias('state_count'),
                          Episode.episode_state.alias('state'))
@@ -25,32 +41,27 @@ def query_shows_list_with_state():
 
 
 def query_added_episodes():
-    pass
+    return to_list(episode_request()
+                   .where(
+        Episode.added_time.between(datetime.datetime.now() + datetime.timedelta(weeks=-1), datetime.datetime.now())))
 
 
 def query_started_episodes():
-    pass
+    return to_list(episode_request()
+                   .where(Episode.episode_state == PlayState.WATCHING))
 
 
 def query_next_episodes():
-    pass
+    return list()
 
 
 def query_episodes_per_show_id(show_id=None):
-    episodes = (Episode.select(Episode,
-                               Season.season_number,
-                               Show.name.alias('show_name'),
-                               Show.id.alias('show_id'),
-                               fn.REPLACE(fn.REPLACE(Episode.path, configurator.get()['settings']['search_path'], ''),
-                                          '\\', '/').alias('url'))
-                .join(Season)
-                .join(Show)
-                .dicts())
+    episodes = episode_request()
 
     if show_id:
         episodes = episodes.where(Season.show == show_id)
 
-    return list(x for x in episodes)
+    return to_list(episodes)
 
 
 def update_episode_status(data):

@@ -5,7 +5,7 @@ import tornado.ioloop
 import tornado.web
 import tornado.template
 from model import ModelManager
-from handlers import ShowListHandler, EpisodeHandler, UpdateStateHandler
+from handlers import ShowListHandler, EpisodeHandler, UpdateStateHandler, AddedEpisodesHandler, NextEpisodesHandler, StartedEpisodesHandler
 from core import configurator
 
 
@@ -23,9 +23,17 @@ if __name__ == '__main__':
         def __init__(self):
             root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
             handlers = [
+                # GET
                 (r"/shows", ShowListHandler),
                 (r"/episodes/([^/]*)", EpisodeHandler),
+                (r"/started", StartedEpisodesHandler),
+                (r"/added", AddedEpisodesHandler),
+                (r"/next", NextEpisodesHandler),
+
+                # PUT
                 (r"/update", UpdateStateHandler),
+
+                # STATIC
                 (r"/content/(.*)", tornado.web.StaticFileHandler,
                  {"path": configurator.get()['settings']['search_path']}),
                 (r"/(.*)", tornado.web.StaticFileHandler, {"path": root, "default_filename": "app/index.html"}),
