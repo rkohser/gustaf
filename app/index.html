@@ -52,13 +52,14 @@
 
         <!-- Main section-->
         <gustaf-player></gustaf-player>
-        <gustaf-episodes episodes="episodes" show-name="{{currentShow.name}}" play="toggleModal"
+        <gustaf-episodes episodes=episodes sort-fields=NUMBER_SORTING show-name={{currentShow.name}} play=toggleModal
+                         toggle-state=toggleState></gustaf-episodes>
+        <gustaf-episodes episodes="startedEpisodes" sort-fields="last_watched" title="Started episodes"
+                         play="toggleModal"
                          toggle-state="toggleState"></gustaf-episodes>
-        <gustaf-episodes episodes="startedEpisodes" title="Started episodes" play="toggleModal"
+        <gustaf-episodes episodes="nextEpisodes" sort-fields="last_watched" title="Next episodes" play="toggleModal"
                          toggle-state="toggleState"></gustaf-episodes>
-        <gustaf-episodes episodes="nextEpisodes" title="Next episodes" play="toggleModal"
-                         toggle-state="toggleState"></gustaf-episodes>
-        <gustaf-episodes episodes="addedEpisodes" title="New episodes" play="toggleModal"
+        <gustaf-episodes episodes="addedEpisodes" sort-fields="added_time" title="New episodes" play="toggleModal"
                          toggle-state="toggleState"></gustaf-episodes>
     </div>
 </div>

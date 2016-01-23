@@ -38,6 +38,8 @@ angular.module('gustafApp', ['gustafFilters'])
             );
         };
 
+        $scope.NUMBER_SORTING = ["season_number", "episode_number"];
+
         var resetDashboard = function () {
             $scope.addedEpisodes = null;
             $scope.nextEpisodes = null;
@@ -196,11 +198,9 @@ angular.module('gustafApp', ['gustafFilters'])
                 showName: '@',
                 title: '@',
                 episodes: '=',
+                sortFields: '=',
                 play: '&',
                 toggleState: '&'
-            },
-            link: function ($scope, element, attributes) {
-
             }
         };
     });

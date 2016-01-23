@@ -4,7 +4,7 @@
             <h1 ng-if="showName">{{showName}}</h1>
             <h1 ng-if="episodes.length">{{title}}</h1>
             <table class="table table-hover">
-                <tr ng-repeat="episode in episodes | orderBy:['season_number','episode_number']">
+                <tr ng-repeat="episode in episodes | orderBy:sortFields">
                     <td>
                         <b>{{showName ? "" : episode.show_name}}
                             S{{episode.season_number|pad}}E{{episode.episode_number|pad}}</b>
