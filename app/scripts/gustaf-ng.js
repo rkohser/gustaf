@@ -7,8 +7,8 @@
 angular.module('gustafApp', ['gustafFilters'])
     .controller('gustafController', function($scope, $http, $filter) {
 
+        // Shows
         $scope.currentShow = null;
-
         $scope.refreshShows = function(){
             $http.get("/shows").success(
                 function(response) {
@@ -17,10 +17,38 @@ angular.module('gustafApp', ['gustafFilters'])
             );
         };
 
+        // Episodes
+        var refreshDashboard = function () {
+            $http.get("/added").success(
+                function (response) {
+                    $scope.addedEpisodes = response;
+                }
+            );
+
+            $http.get("/next").success(
+                function (response) {
+                    $scope.nextEpisodes = response;
+                }
+            );
+
+            $http.get("/started").success(
+                function (response) {
+                    $scope.startedEpisodes = response;
+                }
+            );
+        };
+
+        var resetDashboard = function () {
+            $scope.addedEpisodes = null;
+            $scope.nextEpisodes = null;
+            $scope.startedEpisodes = null;
+        };
+
         $scope.getEpisodes = function (show) {
 
-            $scope.currentShow = show;
+            resetDashboard();
 
+            $scope.currentShow = show;
             $http.get("/episodes/" + show.id).success(
                 function(response) {
                     $scope.episodes = response;
@@ -94,6 +122,9 @@ angular.module('gustafApp', ['gustafFilters'])
 
         // first load the shows
         $scope.refreshShows();
+
+        // then load dashboard
+        refreshDashboard();
     })
 
     .directive('gustafPlayer', function () {
@@ -163,6 +194,7 @@ angular.module('gustafApp', ['gustafFilters'])
             restrict: 'E',
             scope: {
                 showName: '@',
+                title: '@',
                 episodes: '=',
                 play: '&',
                 toggleState: '&'
