@@ -6,5 +6,5 @@ class RefreshHandler(tornado.web.RequestHandler):
         super().__init__(application, request, **kwargs)
 
     def get(self):
-		ModelManager.refresh()
+        ModelManager.refresh()
         self.write("ok")
