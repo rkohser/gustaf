@@ -1,4 +1,5 @@
 from model import ModelManager
+import tornado
 
 class RefreshHandler(tornado.web.RequestHandler):
     def __init__(self, application, request, **kwargs):

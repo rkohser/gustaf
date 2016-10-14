@@ -5,7 +5,7 @@ import tornado.ioloop
 import tornado.web
 import tornado.template
 from model import ModelManager
-from handlers import ShowListHandler, EpisodeHandler, UpdateStateHandler, AddedEpisodesHandler, NextEpisodesHandler, StartedEpisodesHandler
+from handlers import ShowListHandler, EpisodeHandler, UpdateStateHandler, AddedEpisodesHandler, NextEpisodesHandler, StartedEpisodesHandler, RefreshHandler 
 from core import configurator
 
 

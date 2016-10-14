@@ -1,3 +1,4 @@
 from handlers.showlisthandler import ShowListHandler
 from handlers.episodehandler import EpisodeHandler, StartedEpisodesHandler, AddedEpisodesHandler, NextEpisodesHandler
 from handlers.updatestatehandler import UpdateStateHandler
+from handlers.refreshhandler import RefreshHandler
