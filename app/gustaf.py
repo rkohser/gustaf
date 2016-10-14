@@ -14,9 +14,7 @@ if __name__ == '__main__':
 
     configurator.init('settings.json')
 
-    ModelManager.init_model()
-    ModelManager.update_model()
-    ModelManager.update_subtitles()
+    ModelManager.refresh()
 
     class Application(tornado.web.Application):
 
@@ -29,6 +27,7 @@ if __name__ == '__main__':
                 (r"/started", StartedEpisodesHandler),
                 (r"/added", AddedEpisodesHandler),
                 (r"/next", NextEpisodesHandler),
+                (r"/refresh", RefreshHandler),
 
                 # PUT
                 (r"/update", UpdateStateHandler),

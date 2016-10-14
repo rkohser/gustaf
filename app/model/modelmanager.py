@@ -11,6 +11,12 @@ from core import configurator
 class ModelManager:
     episodes = None
     _name_sep = re.compile(r'\W+')
+    
+    @staticmethod
+    def refresh():
+        ModelManager.init_model()
+        ModelManager.update_model()
+        ModelManager.update_subtitles()
 
     @staticmethod
     def init_model():
