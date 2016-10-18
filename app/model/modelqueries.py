@@ -43,7 +43,8 @@ def query_shows_list_with_state():
 def query_added_episodes():
     return to_list(episode_request()
                    .where(
-        Episode.added_time.between(datetime.datetime.now() + datetime.timedelta(weeks=-1), datetime.datetime.now())))
+        Episode.added_time.between(datetime.datetime.now() + datetime.timedelta(weeks=-1), datetime.datetime.now()),
+        Episode.episode_state==PlayState.NOT_WATCHED))
 
 
 def query_started_episodes():
