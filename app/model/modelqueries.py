@@ -53,7 +53,11 @@ def query_started_episodes():
 
 
 def query_next_episodes():
-    return list()
+    return to_list(episode_request()
+                   .where(Episode.episode_state == PlayState.NOT_WATCHED)
+                   .group_by(Show.id)
+                   .having(Episode.episode_number != 1)
+                   .order_by(fn.Min(Episode.episode_number)))
 
 
 def query_episodes_per_show_id(show_id=None):
