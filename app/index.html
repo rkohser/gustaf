@@ -56,12 +56,11 @@
                          toggle-state=toggleState></gustaf-episodes>
         <gustaf-episodes episodes="startedEpisodes" sort-fields="last_watched" title="Started episodes"
                          play="toggleModal"
-                         toggle-state="toggleState"></gustaf-episodes>
+                         toggle-state="toggleState" get-episodes="getEpisodes"></gustaf-episodes>
         <gustaf-episodes episodes="nextEpisodes" sort-fields="last_watched" title="Next episodes" play="toggleModal"
-                         toggle-state="toggleState"
-                         get-episodes="getEpisodes"></gustaf-episodes>
+                         toggle-state="toggleState" get-episodes="getEpisodes"></gustaf-episodes>
         <gustaf-episodes episodes="addedEpisodes" sort-fields="added_time" title="New episodes" play="toggleModal"
-                         toggle-state="toggleState"></gustaf-episodes>
+                         toggle-state="toggleState" get-episodes="getEpisodes"></gustaf-episodes>
     </div>
 </div>
 <script src="bower_components/WebChimeraPlayer/player/webchimera.js" type="text/javascript"></script>
