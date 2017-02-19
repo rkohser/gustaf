@@ -6,8 +6,8 @@
             <table class="table table-hover">
                 <tr ng-repeat="episode in episodes | orderBy:sortFields">
                     <td>
-                        <b>{{showName ? "" : episode.show_name}}
-                            S{{episode.season_number|pad}}E{{episode.episode_number|pad}}</b>
+                        <a ng-if="!showName" href="" ng-click="getEpisodes()(episode.show_id, episode.show_name)"><b>{{episode.show_name}}</b></a>
+                        <b>S{{episode.season_number|pad}}E{{episode.episode_number|pad}}</b>
                     </td>
                     <td>
                         <button type="button" class="btn btn-primary" ng-click="play()(episode)">

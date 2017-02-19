@@ -8,7 +8,7 @@ angular.module('gustafApp', ['gustafFilters'])
     .controller('gustafController', function($scope, $http, $filter) {
 
         // Shows
-        $scope.currentShow = null;
+        $scope.currentShowName = null;
         $scope.refreshShows = function(){
             $http.get("/shows").success(
                 function(response) {
@@ -46,12 +46,12 @@ angular.module('gustafApp', ['gustafFilters'])
             $scope.startedEpisodes = null;
         };
 
-        $scope.getEpisodes = function (show) {
+        $scope.getEpisodes = function (showId, showName) {
 
             resetDashboard();
 
-            $scope.currentShow = show;
-            $http.get("/episodes/" + show.id).success(
+            $scope.currentShowName = showName;
+            $http.get("/episodes/" + showId).success(
                 function(response) {
                     $scope.episodes = response;
                 });
@@ -200,7 +200,8 @@ angular.module('gustafApp', ['gustafFilters'])
                 episodes: '=',
                 sortFields: '=',
                 play: '&',
-                toggleState: '&'
+                toggleState: '&',
+                getEpisodes: '&'
             }
         };
     });

@@ -44,7 +44,7 @@
         <aside class="btn-group-vertical col-lg-4 col-md-4 col-sm-4 sidebar">
             <div class="btn-group">
                 <button ng-repeat="show in shows" id="state_show_{{show.id}}" type="button"
-                        class="btn btn-{{show.state[2]}}" ng-click="getEpisodes(show)">
+                        class="btn btn-{{show.state[2]}}" ng-click="getEpisodes(show.id, show.name)">
                     {{show.name}}
                 </button>
             </div>
@@ -52,13 +52,14 @@
 
         <!-- Main section-->
         <gustaf-player></gustaf-player>
-        <gustaf-episodes episodes=episodes sort-fields=NUMBER_SORTING show-name={{currentShow.name}} play=toggleModal
+        <gustaf-episodes episodes=episodes sort-fields=NUMBER_SORTING show-name={{currentShowName}} play=toggleModal
                          toggle-state=toggleState></gustaf-episodes>
         <gustaf-episodes episodes="startedEpisodes" sort-fields="last_watched" title="Started episodes"
                          play="toggleModal"
                          toggle-state="toggleState"></gustaf-episodes>
         <gustaf-episodes episodes="nextEpisodes" sort-fields="last_watched" title="Next episodes" play="toggleModal"
-                         toggle-state="toggleState"></gustaf-episodes>
+                         toggle-state="toggleState"
+                         get-episodes="getEpisodes"></gustaf-episodes>
         <gustaf-episodes episodes="addedEpisodes" sort-fields="added_time" title="New episodes" play="toggleModal"
                          toggle-state="toggleState"></gustaf-episodes>
     </div>
