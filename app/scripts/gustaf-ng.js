@@ -7,10 +7,13 @@
 angular.module('gustafApp', ['gustafFilters'])
     .controller('gustafController', function($scope, $http, $filter) {
 
+        $scope.spinning = false;
         $scope.refresh = function(){
+            $scope.spinning = true;
             $http.get("/refresh").success(
                 function(response){
                     console.log(response);
+                    $scope.spinning = false;
                     refreshDashboard();
                 }
             );
