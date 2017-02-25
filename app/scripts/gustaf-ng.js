@@ -7,6 +7,15 @@
 angular.module('gustafApp', ['gustafFilters'])
     .controller('gustafController', function($scope, $http, $filter) {
 
+        $scope.refresh = function(){
+            $http.get("/refresh").success(
+                function(response){
+                    console.log(response);
+                    refreshDashboard();
+                }
+            );
+        };
+
         // Shows
         $scope.currentShowName = null;
         $scope.refreshShows = function(){
@@ -17,7 +26,6 @@ angular.module('gustafApp', ['gustafFilters'])
             );
         };
 
-        // Episodes
         var refreshDashboard = function () {
             $http.get("/added").success(
                 function (response) {
