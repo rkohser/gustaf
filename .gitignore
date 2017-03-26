@@ -58,6 +58,7 @@ docs/_build/
 /Scripts
 /include
 bin
+venv
 
 #PyCharm dirs
 .idea/
