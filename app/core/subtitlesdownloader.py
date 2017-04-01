@@ -33,7 +33,7 @@ def get_subs(episode_path, language_codes):
                 result.add(language.alpha3)
         else:
             subtitles = subliminal.download_best_subtitles({video, }, lang,
-                                                           providers=['opensubtitles', 'addic7ed', 'podnapisi'])
+                                                           providers=['opensubtitles', 'podnapisi'])
             for vid, video_subtitles in subtitles.items():
                 if video_subtitles:
                     for sub in video_subtitles:
